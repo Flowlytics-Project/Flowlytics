@@ -2,9 +2,9 @@ import typer
 from sqlmodel import Session, select
 from app.database import engine, create_db_and_tables
 from app.models.user import User
-from app.utilites.security import encrypt_password
+from app.utilities.security import encrypt_password
 
-cli = type.Typer() 
+cli = typer.Typer() 
 
 @cli.command() 
 def init(): 
@@ -13,7 +13,7 @@ def init():
 
 @cli.command() 
 def seed(): 
-    with Session(engine) as session
+    with Session(engine) as session:
         existing = session.exec(
             select(User).where(User.username == "bob")
         ).first() 
