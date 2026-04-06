@@ -1,6 +1,6 @@
 from fastapi import Request, Query
 from typing import Optional
-from datatime import datetime, date
+from datetime import datetime, date
 from . import api_router
 from app.dependencies import SessionDep
 from app.dependencies.auth import AuthDep 
