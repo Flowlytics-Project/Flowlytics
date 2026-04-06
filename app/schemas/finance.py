@@ -32,14 +32,14 @@ class SubscriptionCreate(SQLModel):
     name: str
     amount: float
     billing_cycle: BillingCycle = BillingCycle.MONTHLY
-    next_date: date
+    next_due: date
     active: bool = True 
 
 class SubscriptionUpdate(SQLModel):
     name: Optional[str] = None
     amount: Optional[float] = None
     billing_cycle: Optional[BillingCycle] = None
-    next_date: Optional[date] = None
+    next_due: Optional[date] = None
     active: Optional[bool] = None
 
 class SubscriptionResponse(SQLModel):
@@ -48,9 +48,9 @@ class SubscriptionResponse(SQLModel):
     name: str
     amount: float
     billing_cycle: BillingCycle
-    next_date: date
+    next_due: date
     active: bool
-    created_at: datetime
+    created_at: datetime 
 
 # -- Budget -- 
 
