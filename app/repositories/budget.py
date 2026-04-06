@@ -12,7 +12,7 @@ class BudgetRepository:
 
     def create(self, user_id: int, data: BudgetCreate) -> Budget: 
         budget = Budget(
-            user.id =user.id, 
+            user_id=user_id, 
             category=data.category, 
             limit_amount=data.limit_amount,
             period=data.period,
