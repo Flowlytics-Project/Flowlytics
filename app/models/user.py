@@ -1,7 +1,9 @@
-from sqlmodel import Field, SQLModel
-from typing import Optional
+from sqlmodel import Field, SQLModel, Relationship 
+from typing import Optional, TYPE_CHECKING
 from pydantic import EmailStr
 
+if TYPE_CHECKING:
+    from app.models.finance import Transaction, Subscription, Budget, Income
 
 class UserBase(SQLModel,):
     username: str = Field(index=True, unique=True)
@@ -10,4 +12,9 @@ class UserBase(SQLModel,):
     role:str = ""
 
 class User(UserBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True) 
+
+    transactions: list["Transaction"] = Relationship(back_populates="user")
+    subscriptions: list["Subscription"] = Relationship(back_populates="user")
+    budgets: list["Budget"] = Relationship(back_populates="user")
+    incomes: list["Income"] = Relationship(back_populates="user")

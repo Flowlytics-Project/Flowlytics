@@ -5,7 +5,7 @@ from app.utilities.pagination import Pagination
 from app.schemas.user import UserUpdate
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__) 
 
 class UserRepository:
     def __init__(self, db: Session):

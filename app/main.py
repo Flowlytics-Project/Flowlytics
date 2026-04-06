@@ -4,21 +4,47 @@ from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from app.routers import templates, static_files, router, api_router
 from app.config import get_settings
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager 
+
+
+def _seed_bob():
+    from sqlmodel import Session, select
+    from app.database import engine
+    from app.models.user import User
+    from app.utilities.security import encrypt_password 
+
+    with Session(engine) as session: 
+        existing = session.exec(select(User).where(User.username == "bob")).first()
+        if not existing:
+            bob = User(
+                username="bob",
+                email="bob@mail.com", 
+                password=encrypt_password("bobpass"),
+                role="admin",
+            )
+            session.add(bob)
+            session.commit()
+            print("Seeded user 'bob' with password 'bobpass'")
+        else:
+            print("User 'bob' already exists, skipping seeding.") 
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI): 
+    import app.models 
     from app.database import create_db_and_tables
     create_db_and_tables()
+    _seed_bob()
     yield
 
 
 
-app = FastAPI(middleware=[
-    Middleware(SessionMiddleware, secret_key=get_settings().secret_key)
-],
-    lifespan=lifespan
+app = FastAPI(
+    middleware=[Middleware(SessionMiddleware, secret_key=get_settings().secret_key)],
+    lifespan=lifespan,
+    title="Flowlytics", 
+    description="Personal Finance & Expense Tracker",
+    version="1.0.0",
 )   
 
 app.include_router(router)

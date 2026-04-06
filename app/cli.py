@@ -8,6 +8,7 @@ cli = typer.Typer()
 
 @cli.command() 
 def init(): 
+    import app.models
     create_db_and_tables() 
     typer.echo("Tables created") 
 
