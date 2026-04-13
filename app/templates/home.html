@@ -1,0 +1,19 @@
+{% extends "view-page.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block list_header %}Your recent transactions:{% endblock %}
+
+{% block list_content %}
+    {% for num in range(1,20) %}
+        <div class="list-card">Transaction</div>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <a class="button span" href="/api/transactions">View All</a>
+{% endblock %}
+
+{% block details_content %}
+    <div>Welcome to Flowlytics!</div>
+{% endblock %}

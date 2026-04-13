@@ -1,7 +1,9 @@
-from fastapi import Request, Query
+from fastapi import Request, Query, Form, status
+from fastapi.responses import HTMLResponse, RedirectResponse
 from typing import Optional
 from datetime import datetime, date
 from . import api_router
+import typer
 from app.dependencies import SessionDep
 from app.dependencies.auth import AuthDep 
 from app.repositories.transaction import TransactionRepository
@@ -9,6 +11,7 @@ from app.repositories.subscription import SubscriptionRepository
 from app.repositories.budget import BudgetRepository
 from app.repositories.income import IncomeRepository 
 from  app.services.finance_service import FinanceService 
+from . import templates
 from app.schemas.finance import ( 
     TransactionCreate, TransactionUpdate, TransactionResponse,
     SubscriptionCreate, SubscriptionUpdate, SubscriptionResponse,
@@ -28,34 +31,135 @@ def _get_service(db) -> FinanceService:
 
 # -- Transactions -- 
 
-@api_router.post("/transactions", response_model=TransactionResponse, status_code=201, tags=["Transactions"]) 
-async def create_transaction( data: TransactionCreate, user: AuthDep, db: SessionDep): 
-     return _get_service(db).create_transaction(user.id, data) 
+@api_router.get("/transactions/create", response_class=HTMLResponse, status_code=201, tags=["Transactions"]) 
+async def create_transaction(user: AuthDep, db: SessionDep, request: Request): 
+     transactions = _get_service(db).list_transactions(user.id, category=None, start_date=None, end_date=None)
+     selected_transaction = None
+     form_action = "create"
+     return templates.TemplateResponse(
+        request=request, 
+        name="transactions-form.html",
+        context={
+            "user": user,
+            "transactions": transactions,
+            "selected_transaction": selected_transaction,
+            "form_action": form_action
+        }
+    )
 
-@api_router.get("/transactions", response_model=list[TransactionResponse], tags=["Transactions"])
+@api_router.post("/transactions/create", response_model=TransactionResponse, status_code=201, tags=["Transactions"]) 
+async def create_transaction(user: AuthDep, db: SessionDep, request: Request, amount_field: str = Form(), category_field: str = Form(), description_field: str = Form()): 
+    if category_field == "food":
+        category_field = TransactionCategory.FOOD
+    elif category_field == "transport":
+        category_field = TransactionCategory.TRANSPORT
+    elif category_field == "housing":
+        category_field = TransactionCategory.HOUSING
+    elif category_field == "entertainment":
+        category_field = TransactionCategory.ENTERTAINMENT
+    elif category_field == "health":
+        category_field = TransactionCategory.HEALTH
+    elif category_field == "education":
+        category_field = TransactionCategory.EDUCATION
+    elif category_field == "clothing":
+        category_field = TransactionCategory.CLOTHING
+    elif category_field == "utilities":
+        category_field = TransactionCategory.UTILITIES
+    elif category_field == "other":
+        category_field = TransactionCategory.OTHER
+    data = TransactionCreate(amount=amount_field, category=category_field, description=description_field)
+    check = _get_service(db).create_transaction(user.id, data) 
+    if check:
+        typer.echo("Transaction Created")
+    return RedirectResponse(url=request.url_for('list_transactions'), status_code=status.HTTP_303_SEE_OTHER)
+    
+
+@api_router.get("/transactions", response_class=HTMLResponse, tags=["Transactions"])
 async def list_transactions(
      user: AuthDep,
+     request: Request,
      db: SessionDep,
      category: Optional[TransactionCategory] = None,
      start_date: Optional[date] = None,
      end_date: Optional[date] = None,
 ): 
-     return _get_service(db).list_transactions(user.id, category, start_date, end_date)
+    transactions = _get_service(db).list_transactions(user.id, category, start_date, end_date)
+    selected_transaction = None
+    return templates.TemplateResponse(
+        request=request, 
+        name="transactions.html",
+        context={
+            "user": user,
+            "transactions": transactions,
+            "selected_transaction": selected_transaction
+        }
+    )
 
 
-@api_router.get("/transactions/{tx_id}", response_model=TransactionResponse, tags=["Transactions"])
-async def get_transaction(tx_id: int, user: AuthDep, db: SessionDep):
-    return _get_service(db).get_transaction(user.id, tx_id)
+@api_router.get("/transactions/{tx_id}", response_class=HTMLResponse, tags=["Transactions"])
+async def get_transaction(tx_id: int, user: AuthDep, db: SessionDep, request: Request):
+    transactions = _get_service(db).list_transactions(user.id, category=None, start_date=None, end_date=None)
+    selected_transaction = _get_service(db).get_transaction(user.id, tx_id)
+    return templates.TemplateResponse(
+        request=request, 
+        name="transactions.html",
+        context={
+            "user": user,
+            "transactions": transactions,
+            "selected_transaction": selected_transaction
+        }
+    )
+    
+@api_router.get("/transactions/update/{tx_id}", response_class=HTMLResponse, status_code=201, tags=["Transactions"]) 
+async def update_transaction(user: AuthDep, tx_id: int, db: SessionDep, request: Request): 
+     transactions = _get_service(db).list_transactions(user.id, category=None, start_date=None, end_date=None)
+     selected_transaction = _get_service(db).get_transaction(user.id, tx_id)
+     form_action = "update"
+     return templates.TemplateResponse(
+        request=request, 
+        name="transactions-form.html",
+        context={
+            "user": user,
+            "transactions": transactions,
+            "selected_transaction": selected_transaction,
+            "form_action": form_action
+        }
+    )
+
+@api_router.post("/transactions/update/{tx_id}", response_model=TransactionResponse, tags=["Transactions"])
+async def update_transaction(user: AuthDep, tx_id: int, db: SessionDep, request: Request, amount_field: str = Form(), category_field: str = Form(), description_field: str = Form()): 
+    if category_field == "food":
+        category_field = TransactionCategory.FOOD
+    elif category_field == "transport":
+        category_field = TransactionCategory.TRANSPORT
+    elif category_field == "housing":
+        category_field = TransactionCategory.HOUSING
+    elif category_field == "entertainment":
+        category_field = TransactionCategory.ENTERTAINMENT
+    elif category_field == "health":
+        category_field = TransactionCategory.HEALTH
+    elif category_field == "education":
+        category_field = TransactionCategory.EDUCATION
+    elif category_field == "clothing":
+        category_field = TransactionCategory.CLOTHING
+    elif category_field == "utilities":
+        category_field = TransactionCategory.UTILITIES
+    elif category_field == "other":
+        category_field = TransactionCategory.OTHER
+    data = TransactionCreate(amount=amount_field, category=category_field, description=description_field)
+    typer.echo("Updating transaction")
+    check = _get_service(db).update_transaction(user.id, tx_id, data) 
+    if check:
+        typer.echo("Transaction Updated")
+    else:
+        typer.echo("Transaction not found")
+    return RedirectResponse(url=request.url_for('list_transactions'), status_code=status.HTTP_303_SEE_OTHER)
 
 
-@api_router.put("/transactions/{tx_id}", response_model=TransactionResponse, tags=["Transactions"])
-async def update_transaction(tx_id: int, data: TransactionUpdate, user: AuthDep, db: SessionDep):
-    return _get_service(db).update_transaction(user.id, tx_id, data)
-
-
-@api_router.delete("/transactions/{tx_id}", status_code=204, tags=["Transactions"])
-async def delete_transaction(tx_id: int, user: AuthDep, db: SessionDep):
+@api_router.get("/transactions/delete/{tx_id}", status_code=204, tags=["Transactions"])
+async def delete_transaction(tx_id: int, user: AuthDep, request: Request, db: SessionDep):
     _get_service(db).delete_transaction(user.id, tx_id)
+    return RedirectResponse(url=request.url_for('list_transactions'), status_code=status.HTTP_303_SEE_OTHER)
 
 
 # -- Subscriptions -- 

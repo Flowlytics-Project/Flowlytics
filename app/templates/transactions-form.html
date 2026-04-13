@@ -1,0 +1,63 @@
+{% extends "view-page.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block list_header %}Transactions{% endblock %}
+
+{% block list_content %}
+    {% for transaction in transactions %}
+        <a class="list-card" href="/api/transactions/{{transaction.id}}">
+            {{transaction.transaction_date}} | <strong>${{transaction.amount}}</strong>
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <div class="button span">New Transaction</div>
+{% endblock %}
+
+{% block details_header %}Details{% endblock %}
+
+{% block details_content %}
+    {% if form_action == 'create' %}
+        <form id="form" name="form" class="form" method="POST" action="/api/transactions/create">
+    {% else %}
+        <form id="form" name="form" class="form" method="POST" action="/api/transactions/update/{{selected_transaction.id}}">
+    {% endif %}
+        <label for="amount_field">Amount:</label>
+        <input 
+            name="amount_field"
+            value="{% if form_action == 'update' %}{{selected_transaction.amount}}{% endif %}"
+            type ="number"
+            placeholder="0000"
+        >
+        <label for="category_field">Category:</label>
+        <select name="category_field" required>
+            <option value="" disabled selected>[Select Category]</option>
+            <option value="food" class="select">Food</option>
+            <option value="transport" class="select">Transport</option>
+            <option value="housing" class="select">Housing</option>
+            <option value="entertainment" class="select">Entertainment</option>
+            <option value="health" class="select">Health</option>
+            <option value="education" class="select">Education</option>
+            <option value="clothing" class="select">Clothing</option>
+            <option value="utilities" class="select">Utilities</option>
+            <option value="other" class="select">Other</option>
+        </select>
+        <label for="description_field">Description:</label>
+        <input 
+            name="description_field"
+            value="{% if form_action == 'update' %}{{selected_transaction.description}}{% endif %}"
+            type ="text"
+            placeholder="Description"
+        >
+    </form>
+{% endblock %}
+
+{% block details_footer %}
+    {% if form_action == 'create' %}
+        <button class="button" type="submit" form="form">Create</button>
+    {% else %}
+        <button class="button" type="submit" form="form">Save</button>
+    {% endif %}
+{% endblock %}

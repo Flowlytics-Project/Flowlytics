@@ -7,7 +7,7 @@ from app.config import get_settings
 from contextlib import asynccontextmanager 
 
 
-def _seed_bob():
+def _seed_users():
     from sqlmodel import Session, select
     from app.database import engine
     from app.models.user import User
@@ -26,7 +26,21 @@ def _seed_bob():
             session.commit()
             print("Seeded user 'bob' with password 'bobpass'")
         else:
-            print("User 'bob' already exists, skipping seeding.") 
+            print("User 'bob' already exists, skipping seeding.")
+
+        existing = session.exec(select(User).where(User.username == "jon")).first()
+        if not existing:
+            jon = User(
+                username="jon",
+                email="jon@mail.com", 
+                password=encrypt_password("jonpass"),
+                role="admin",
+            )
+            session.add(jon)
+            session.commit()
+            print("Seeded user 'jon' with password 'bobpass'")
+        else:
+            print("User 'jon' already exists, skipping seeding.") 
 
 
 @asynccontextmanager
@@ -34,7 +48,7 @@ async def lifespan(app: FastAPI):
     import app.models 
     from app.database import create_db_and_tables
     create_db_and_tables()
-    _seed_bob()
+    _seed_users()
     yield
 
 

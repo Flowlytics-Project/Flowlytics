@@ -1,0 +1,35 @@
+{% extends "view-page.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block list_header %}Transactions{% endblock %}
+
+{% block list_content %}
+    {% for transaction in transactions %}
+        <a class="list-card" href="/api/transactions/{{transaction.id}}">
+            {{transaction.transaction_date}} | <strong>${{transaction.amount}}</strong>
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <a class="button span" href="/api/transactions/create">New Transaction</a>
+{% endblock %}
+
+{% block details_header %}Details{% endblock %}
+
+{% block details_content %}
+    {% if selected_transaction is not none %}
+        <div>Amount: ${{selected_transaction.amount}}</div>
+        <div>Date: {{selected_transaction.transaction_date}}</div>
+        <div>Category: {{selected_transaction.category.value}}</div>
+        <div>Description: {{selected_transaction.description}}</div>
+    {% else %}
+        <div>No transaction selected.</div>
+    {% endif %}
+{% endblock %}
+
+{% block details_footer %}
+    <a class="button" href="/api/transactions/update/{{selected_transaction.id}}">Update Transaction</a>
+    <a class="button" href="/api/transactions/delete/{{selected_transaction.id}}">Delete Transaction</a>
+{% endblock %}

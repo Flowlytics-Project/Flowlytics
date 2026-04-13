@@ -3,125 +3,216 @@
 {% block internal_css %}
 
 <style>
-    body {
-        overflow-x: hidden;
-        background-color: #f8f9fa;
+    .heading
+    {
+        font-family: var(--major-font);
+        color: var(--primary);
     }
-
-    #wrapper {
+    .text
+    {
+        font-family: var(--minor-font);
+        color: var(--white);
+    }
+    .navbar
+    {
+        z-index: 2;
         display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        height: 8vh;
+        min-height: 50px;
+        width: 100vw;
+        max-width: 100vw;
+        background-color: var(--primary);
+    }
+    .nav-item-section
+    {
+        z-index: 2;
+        display: flex;
+        flex-direction: row;
+        height:5vh;
+        max-height:vh;
+        justify-content: center;
+        align-items: center;
+        min-width: 0;
+        min-height: 3vh;
     }
 
-    #sidebar {
-        min-width: 250px;
-        max-width: 250px;
-        min-height: 100vh;
-        transition: all 0.3s;
-        background: #1b263b;
-        color: #fff;
+    .nav-item
+    {
+        display:flex;
+        cursor: pointer;
+        min-width: 0;
+        border-radius: 10px;
+        justify-content: center;
+        align-content: center;
+        padding: 2vh 3vw;
+        color: var(--black);
+        text-align: center;
+        font-family: var(--major-font);
+        font-size: 90%;
+        font-weight: bolder;
+        text-decoration:none;
+        transition: color 0.3s, background-color 0.3s;
+
+        &.active
+        {
+            background-color: var(--white);
+            color: var(--primary);
+        }
     }
 
-    #sidebar.collapsed {
-        margin-left: -250px;
+    .nav-item:hover
+    {
+        opacity: 50%;
     }
 
-    #sidebar .nav-link {
-        color: #adb5bd;
-        font-weight: 500;
+    .page-content
+    {
+        background-color: var(--white);
+        width: 100vw;
+        height: 92vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    #sidebar .nav-link:hover,
-    #sidebar .nav-link.active {
-        color: #fff;
-        background-color: #415a77;
-        border-radius: 0.5rem;
-    }
-
-    #content {
-        width: 100%;
-        padding: 1rem;
-        transition: all 0.3s;
+    .pane
+    {
+        background-color: var(--black);
+        height: 100%;
+        width: 99%;
         display: flex;
         flex-direction: column;
-        background-color: #f8f9fa;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        margin:1px;
+        font-family: var(--minor-font);
+
+        &.list
+        {
+            width: 30%;
+        }
+
+        &.detail
+        {
+            width: 70%;
+        }
     }
 
-    .card {
-        border: none;
-        border-radius: 1rem;
+    .pane-header
+    {
+        /*background-color:red;*/
+        color: var(--white);
+        display: flex;
+        width: 100%;
+        height: 10%;
+        justify-content: left;
+        align-items: center;
+        padding: 15px;
+        font-family: var(--major-font);
     }
 
-    .summary-card {
-        border-left: 5px solid #0d6efd;
+    .pane-content
+    {
+        height: 80%;
+        width: 100%;
+        color: var(--white);
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: top;
+        padding: 15px;
+        /* background-color: red; */
+        &.center
+        {
+            align-items: center;
+        }
     }
 
-    .navbar {
-        border-bottom: 1px solid #dee2e6;
+    .pane-footer
+    {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        color: var(--black);
+        height: 10%;
+        width: 100%;
+        padding: 15px;
     }
+
+    .list-card
+    {
+        display: flex;
+        width: 95%;
+        margin: 1px;
+        justify-content: left;
+        padding: 10px;
+        border-radius: 8px;
+        transition: color 0.2s, background-color 0.2s;
+        text-decoration: none;
+        color: var(--white);
+    }
+
+    .list-card:hover
+    {
+        background-color: var(--primary);
+        opacity: 50%;
+        color: var(--black);
+        cursor: pointer;
+    }
+
+    .button
+    {
+        background-color: var(--primary);
+        color: var(--black);
+        height: 50px;
+        padding: 5px 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
+        font-family: var(--major-font);
+        margin: 5px;
+        font-weight: bolder;
+        text-decoration: none;
+
+        &.span
+        {
+            width: 100%;
+        }
+    }
+
+    .button:hover
+    {
+        opacity: 50%;
+        cursor: pointer;
+    }
+
 </style>
-
-{% block additional_styles %}{% endblock %}
-
-{% endblock %}
-
-
-{% block content %}
-<div id="wrapper">
-
-    <nav id="sidebar" class="p-3 d-flex flex-column vh-100">
-        <h4 class="text-white mb-4 text-center py-4">Project Template</h4>
-
-        <ul class="nav nav-pills flex-column gap-2 flex-grow-1">
-            <li class="nav-item">
-                <a class="nav-link d-flex align-items-center {{ 'active' if request.path == '/app' }}" href="/app">
-                    <span class="material-symbols-outlined me-2">people</span>
-                    Users
-                </a>
-            </li>
-            
-            <li class="nav-item mt-auto">
-                <a class="nav-link d-flex align-items-center text-danger" href="/logout">
-                    <span class="material-symbols-outlined me-2">logout</span>
-                    Logout
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <div id="content">
-        <nav class="navbar navbar-expand-lg bg-white mb-4 px-3 rounded-3 shadow-sm">
-            <button class="btn btn-outline-secondary" id="menu-toggle">
-                <span class="material-symbols-outlined md-dark">menu</span>
-            </button>
-
-            <div class="ms-auto d-flex align-items-center gap-3">
-                <span class="fw-semibold">Welcome, {{user.username}}</span>
-            </div>
-        </nav>
-        
-        <div class="row">
-            <div class="col-12">
-                {% for message in get_flashed_messages(request) %}
-                    <div class="alert alert-{{ message.type }}" role="alert">{{ message.message }}</div>
-                {% endfor %}
-            </div>
-        </div>
-
-
-        {% block subpage_content %}{% endblock %}
-
-    </div>
-
-
-</div>
-
-
-<script>
-    document.getElementById("menu-toggle").addEventListener("click", function () {
-        document.getElementById("sidebar").classList.toggle("collapsed");
-    });
-</script>
 
 {% block subpage_scripts %}{% endblock %}
 
 {% endblock %}
+
+{% block navbar %}
+    <div class="navbar">
+        <div class = "nav-item-section">
+            <a class="nav-item" href = "/api/transactions">Transactions</a>
+            <a class="nav-item" href = "/api/budgets">Budgets</a>
+            <a class="nav-item" href = "/api/incomes">Incomes</a>
+            <a class="nav-item" href = "/api/subscriptions">Subscriptions</a>
+            <a class="nav-item" href = "/api/reports/burn-rate">Burn Rate Report</a>
+            <a class="nav-item" href = "/api/reports/budget-status">Budget Status</a>
+            <a class="nav-item" href = "/logout">LOG OUT</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+

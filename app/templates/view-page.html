@@ -1,0 +1,43 @@
+{% extends "authenticated-base.html" %}
+
+{% block external_js %}
+<script src="{{ url_for('static', path='js/app.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-content">
+        <!-- <h2 class="heading">Welcome user</h2> -->
+        <div class="pane list">
+            <div class="pane-header">{% block list_header %}{% endblock %}</div>
+            <div class="pane-content center">{% block list_content %}{% endblock %}</div>
+            <div class="pane-footer">{% block list_footer %}{% endblock %}</div>
+        </div>
+        <div class="pane detail">
+            <div class="pane-header">{% block details_header %}{% endblock %}</div>
+            <div class="pane-content">{% block details_content %}{% endblock %}</div>
+            <div class="pane-footer">{% block details_footer %}{% endblock %}</div>
+        </div>
+    </div>
+
+    <!-- <div class="container" id="content">
+        <div class="row">
+            <p>
+                This is table is rendered on the Client. JavaScript code requests the data from <a href="/api/users">/api/users</a> and writes it to this page.
+            </p>
+        </div>
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Id</th><th>Username</th>
+                  </tr>
+                </thead>
+                <tbody id="result">
+                
+                <tbody>
+            </table>
+        </div>
+    </div> -->
+
+{% endblock %}
