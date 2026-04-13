@@ -1,0 +1,87 @@
+{% extends "view-page.html" %}
+
+{% block title %}Subscriptions{% endblock %}
+
+{% block list_header %}Subscriptions{% endblock %}
+
+{% block list_content %}
+    {% for subscription in subscriptions %}
+        <a class="list-card" href="/api/subscriptions/{{subscription.id}}">
+            {{subscription.name}} | 
+            <strong>
+                {% if subscription.active == true %}
+                    Active
+                {% else %}
+                    Inactive
+                {% endif %}
+            </strong>
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <div class="button span" href="/api/subscriptions/create">New Subscription</div>
+{% endblock %}
+
+{% block details_header %}
+{% if form_action == 'create' %}
+    <Strong>New Subscription</Strong>
+{% elif form_action == 'update' %}
+    <Strong>Update Subscription</Strong>
+{% else %}
+    <Strong>No Subscription Selected</Strong>
+{% endif %}
+{% endblock %}
+
+{% block details_content %}
+    {% if form_action == 'create' %}
+        <form id="form" name="form" class="form" method="POST" action="/api/subscriptions/create">
+    {% else %}
+        <form id="form" name="form" class="form" method="POST" action="/api/subscriptions/update/{{selected_subscription.id}}">
+    {% endif %}
+        <label for="name_field">Name:</label>
+        <input 
+            name="name_field"
+            value="{% if form_action == 'update' %}{{selected_subscription.name}}{% endif %}"
+            type ="text"
+            placeholder="Name"
+        >
+        <label for="amount_field">Amount:</label>
+        <input 
+            name="amount_field"
+            value="{% if form_action == 'update' %}{{selected_subscription.amount}}{% endif %}"
+            type ="number"
+            placeholder="0000"
+        >
+        <label for="billing_cycle_field">Billing Cycle:</label>
+        <select name="billing_cycle_field" required>
+            <option value="" disabled selected>[Select Cycle]</option>
+            <option value="weekly" class="select">Weekly</option>
+            <option value="monthly" class="select">Monthly</option>
+            <option value="quarterly" class="select">Quarterly</option>
+            <option value="yearly" class="select">Yearly</option>
+        </select>
+        <label for="next_due_field">Next Due:</label>
+        <input
+            name="next_due_field"
+            value="{% if form_action == 'update' %}{{selected_subscription.next_due}}{% endif %}"
+            type="date"
+            placeholder="YYYY-MM-DD"
+        >
+        <label for="active_field">Activity:</label>
+        <select name="active_field" required>
+            {% if form_action == 'update' %}
+                <option value="true" {% if selected_subscription.active %}selected{% endif %}>Active</option>
+                <option value="false" {% if selected_subscription.active is false %}selected{% endif %}>Inactive</option>
+            {% endif %}
+        </select>
+    </form>
+{% endblock %}
+
+{% block details_footer %}
+    {% if form_action == 'create' %}
+        <button class="button" type="submit" form="form">Create</button>
+    {% else %}
+        <button class="button" type="submit" form="form">Save</button>
+    {% endif %}
+{% endblock %}

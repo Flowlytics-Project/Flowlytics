@@ -1,0 +1,51 @@
+{% extends "view-page.html" %}
+
+{% block title %}Subscriptions{% endblock %}
+
+{% block list_header %}Subscriptions{% endblock %}
+
+{% block list_content %}
+    {% for subscription in subscriptions %}
+        <a class="list-card" href="/api/subscriptions/{{subscription.id}}">
+            {{subscription.name}} | 
+            <strong>
+                {% if subscription.active == true %}
+                    Active
+                {% else %}
+                    Inactive
+                {% endif %}
+            </strong>
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <a class="button span" href="/api/subscriptions/create">New Subscription</a>
+{% endblock %}
+
+{% block details_header %}Details{% endblock %}
+
+{% block details_content %}
+    {% if selected_subscription is not none %}
+        <div>Name: {{selected_subscription.name}}</div>
+        <div>
+            {% if selected_subscription.active == true %}
+                Status: Active
+            {% else %}
+                Status: Inactive
+            {% endif %}
+        </div>
+        <div>Amount: ${{selected_subscription.amount}}</div>
+        <div>Billing Cycle: {{selected_subscription.billing_cycle.value}}</div>
+        <div>Next Due: {{selected_subscription.next_due}}</div>
+    {% else %}
+        <div>No subscription selected.</div>
+    {% endif %}
+{% endblock %}
+
+{% block details_footer %}
+    {% if selected_subscription is not none %}
+        <a class="button" href="/api/subscriptions/update/{{selected_subscription.id}}">Update Subscription</a>
+        <a class="button" href="/api/subscriptions/delete/{{selected_subscription.id}}">Delete Subscription</a>
+    {% endif %}
+{% endblock %}

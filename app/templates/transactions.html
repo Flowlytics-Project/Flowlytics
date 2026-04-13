@@ -30,6 +30,8 @@
 {% endblock %}
 
 {% block details_footer %}
-    <a class="button" href="/api/transactions/update/{{selected_transaction.id}}">Update Transaction</a>
-    <a class="button" href="/api/transactions/delete/{{selected_transaction.id}}">Delete Transaction</a>
+    {% if selected_transaction is not none %}
+        <a class="button" href="/api/transactions/update/{{selected_transaction.id}}">Update Transaction</a>
+        <a class="button" href="/api/transactions/delete/{{selected_transaction.id}}">Delete Transaction</a>
+    {% endif %}
 {% endblock %}

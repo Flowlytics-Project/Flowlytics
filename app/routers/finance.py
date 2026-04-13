@@ -17,7 +17,7 @@ from app.schemas.finance import (
     SubscriptionCreate, SubscriptionUpdate, SubscriptionResponse,
     BudgetCreate, BudgetUpdate, BudgetResponse,
     IncomeCreate, IncomeUpdate, IncomeResponse,
-    BurnRateReport, BudgetStatus,
+    BurnRateReport, BudgetStatus, BillingCycle
 ) 
 from app.models.finance import TransactionCategory 
 
@@ -164,34 +164,113 @@ async def delete_transaction(tx_id: int, user: AuthDep, request: Request, db: Se
 
 # -- Subscriptions -- 
 
-@api_router.post("/subscriptions", response_model=SubscriptionResponse, status_code=201, tags=["Subscriptions"])
-async def create_subscription(data: SubscriptionCreate, user: AuthDep, db: SessionDep):
-    return _get_service(db).create_subscription(user.id, data)
+@api_router.get("/subscriptions/create", response_class=HTMLResponse, status_code=201, tags=["Subscriptions"])
+async def create_subscription(user: AuthDep, db: SessionDep, request: Request, active_only: bool = False):
+    subscriptions = _get_service(db).list_subscriptions(user.id, active_only)
+    selected_subscription = None
+    form_action = "create"
+    return templates.TemplateResponse(
+        request=request,
+        name="subscriptions-form.html",
+        context={
+            "user": user,
+            "subscriptions": subscriptions,
+            "selected_subscription": selected_subscription,
+            "form_action": form_action
+        }
+    )
 
 
-@api_router.get("/subscriptions", response_model=list[SubscriptionResponse], tags=["Subscriptions"])
+@api_router.post("/subscriptions/create", response_model=SubscriptionResponse, status_code=201, tags=["Subscriptions"])
+async def create_subscription(user: AuthDep, db: SessionDep, request: Request, name_field: str = Form(), amount_field: str = Form(), billing_cycle_field: str = Form(), next_due_field: date = Form()):
+    if billing_cycle_field == "weekly":
+        billying_cycle_field = BillingCycle.WEEKLY
+    elif billing_cycle_field == "monthly":
+        billying_cycle_field = BillingCycle.MONTHLY
+    elif billing_cycle_field == "quarterly":
+        billying_cycle_field = BillingCycle.QUARTERLY
+    elif billing_cycle_field == "yearly":
+        billying_cycle_field = BillingCycle.YEARLY
+    data = SubscriptionCreate(name=name_field, amount=amount_field, billing_cycle=billing_cycle_field, next_due=next_due_field)
+    check = _get_service(db).create_subscription(user.id, data)
+    if check:
+        typer.echo("Subscription Created")
+    return RedirectResponse(url=request.url_for('list_subscriptions'), status_code=status.HTTP_303_SEE_OTHER)
+
+
+@api_router.get("/subscriptions", response_class=HTMLResponse, tags=["Subscriptions"])
 async def list_subscriptions(
     user: AuthDep,
     db: SessionDep,
+    request: Request,
     active_only: bool = False,
 ):
-    return _get_service(db).list_subscriptions(user.id, active_only)
+    subscriptions = _get_service(db).list_subscriptions(user.id, active_only)
+    selected_subscription = None
+    return templates.TemplateResponse(
+        request=request,
+        name="subscriptions.html",
+        context={
+            "user": user,
+            "subscriptions": subscriptions,
+            "selected_subscription": selected_subscription
+        }
+    )
 
 
-@api_router.get("/subscriptions/{sub_id}", response_model=SubscriptionResponse, tags=["Subscriptions"])
-async def get_subscription(sub_id: int, user: AuthDep, db: SessionDep):
-    return _get_service(db).get_subscription(user.id, sub_id)
+@api_router.get("/subscriptions/{sub_id}", response_class=HTMLResponse, tags=["Subscriptions"])
+async def get_subscription(sub_id: int, user: AuthDep, request: Request, db: SessionDep, active_only = False):
+    subscriptions = _get_service(db).list_subscriptions(user.id, active_only)
+    selected_subscription = _get_service(db).get_subscription(user.id, sub_id)
+    return templates.TemplateResponse(
+        request=request, 
+        name="subscriptions.html",
+        context={
+            "user": user,
+            "subscriptions": subscriptions,
+            "selected_subscription": selected_subscription
+        }
+    )
 
+@api_router.get("/subscriptions/update/{sub_id}", response_class=HTMLResponse, status_code=201, tags=["Subscriptions"]) 
+async def update_transaction(user: AuthDep, sub_id: int, db: SessionDep, request: Request, active_only = False): 
+     subscriptions = _get_service(db).list_subscriptions(user.id, active_only)
+     selected_subscription = _get_service(db).get_subscription(user.id, sub_id)
+     form_action = "update"
+     return templates.TemplateResponse(
+        request=request, 
+        name="subscriptions-form.html",
+        context={
+            "user": user,
+            "subscriptions": subscriptions,
+            "selected_subscription": selected_subscription,
+            "form_action": form_action
+        }
+    )
 
-@api_router.put("/subscriptions/{sub_id}", response_model=SubscriptionResponse, tags=["Subscriptions"])
-async def update_subscription(sub_id: int, data: SubscriptionUpdate, user: AuthDep, db: SessionDep):
-    return _get_service(db).update_subscription(user.id, sub_id, data)
+@api_router.post("/subscriptions/update/{sub_id}", response_model=SubscriptionResponse, tags=["Subscriptions"])
+async def update_subscription(user: AuthDep, sub_id: int, db: SessionDep, request: Request, name_field: str = Form(), amount_field: str = Form(), billing_cycle_field: str = Form(), next_due_field: date = Form(), active_field: bool = Form()): 
+    if billing_cycle_field == "weekly":
+        billying_cycle_field = BillingCycle.WEEKLY
+    elif billing_cycle_field == "monthly":
+        billying_cycle_field = BillingCycle.MONTHLY
+    elif billing_cycle_field == "quarterly":
+        billying_cycle_field = BillingCycle.QUARTERLY
+    elif billing_cycle_field == "yearly":
+        billying_cycle_field = BillingCycle.YEARLY
+    data = SubscriptionCreate(name=name_field, amount=amount_field, billing_cycle=billing_cycle_field, next_due=next_due_field, active=active_field)
+    typer.echo("Updating subscription")
+    check = _get_service(db).update_subscription(user.id, sub_id, data) 
+    if check:
+        typer.echo("Subscription Updated")
+    else:
+        typer.echo("Subscription not found")
+    return RedirectResponse(url=request.url_for('list_subscriptions'), status_code=status.HTTP_303_SEE_OTHER)
 
-
-@api_router.delete("/subscriptions/{sub_id}", status_code=204, tags=["Subscriptions"])
-async def delete_subscription(sub_id: int, user: AuthDep, db: SessionDep):
+@api_router.get("/subscriptions/delete/{sub_id}", status_code=204, tags=["Subscriptions"])
+async def delete_subscription(sub_id: int, user: AuthDep, request: Request, db: SessionDep):
     _get_service(db).delete_subscription(user.id, sub_id)
-
+    return RedirectResponse(url=request.url_for('list_subscriptions'), status_code=status.HTTP_303_SEE_OTHER)
 
 # -- Budgets --
 
