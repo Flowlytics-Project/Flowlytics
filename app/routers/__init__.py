@@ -15,6 +15,6 @@ router = APIRouter(tags=["Jinja Based Endpoints"], include_in_schema=get_setting
 api_router = APIRouter(tags=["API Endpoints"], prefix="/api")
 
 # Import submodules last to avoid circular imports
-from . import (index, login, register, admin_home, user_home, users, logout, finance, landing) 
+from . import (landing, login, register, admin_home, user_home, users, logout, finance) 
 
-__all__ = ["templates", "static_files", "router", "api_router"]
+__all__ = ["templates", "static_files", "router", "api_router"] 
