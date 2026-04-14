@@ -1,0 +1,642 @@
+{% extends "base.html" %} 
+{% block title %} Flowlytics - Personal Finance & Expense Tracker {% endblock} 
+
+{% block internal_css %}  
+
+<style> 
+
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap'); 
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0; 
+        padding: 0; 
+    } 
+
+    :root {
+        --primary: #34eb8f; 
+        --primary-dark: #1fc972; 
+        --black: #262626;
+        --dark: #111111; 
+        --white: #f5f7f6; 
+        --major-font: 'Comfortaa', cursive;
+        --minor-font: 'Montserrat', sans-serif;
+    } 
+
+    body {
+        font-family: var(--minor-font);
+        background-color: var(--dark);
+        color: var(--white);
+        overflow-x: hidden; 
+    } 
+
+    /* NavBar */ 
+
+    .lp-nav { 
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 2.5rem; 
+        height: 68px;
+        background: rgba(17, 17, 17, 0.85); 
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(52, 235, 143, 0.12); 
+    } 
+
+    .lp-nav-brand {
+        font-family: var(--major-font);
+        font-size: 1.45rem; 
+        font-weight: 700;
+        color: var(--primary);
+        text-decoration: none;
+        letter-spacing: 0.5px; 
+    } 
+
+    .lp-nav-links {
+        display: flex;
+        gap: 0.25rem; 
+        align-items: center;
+    } 
+
+    .lp-nav-links a {
+        font-family: var(--major-font); 
+        font-size: 0.88rem; 
+        font-weight: 600;
+        color: var(--white);
+        text-decoration: none;
+        padding: 0.5rem 1.1rem;
+        border-radius: 8px;
+        transition: background 0.2s, color 0.2s; 
+    } 
+
+    .lp-nav-links a:hover {
+        background: rgba(52, 235, 143, 0.12);
+        color: var(--primary); 
+    } 
+
+    .lp-nav-links .btn-login {
+        border: 1.5px solid var(--primary);
+        color: var(--primary); 
+    } 
+
+    .lp-nav-links .btn-login:hover {
+        background: var(--primary);
+        color: var(--black); 
+    } 
+
+    .lp-nav-links .btn-signup {
+        background: var(--primary);
+        color: var(--black); 
+    }  
+
+    .lp-nav-links .btn-signup:hover {
+        background: var(--primary-dark); 
+    }  
+
+     /* Hamburger */ 
+
+     .lp-hamburger {
+        display: none;
+        flex-direction: column; 
+        gap: 5px; 
+        cursor: pointer; 
+        padding: 6px;
+        background: none; 
+        border: none; 
+    } 
+
+    .lp-hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--white);
+        border-radius: 2px;
+        transition: all 0.3s; 
+    } 
+
+    .lp-hamburger.open span:nth-child(1) {
+        transform: rotate(45deg) translateY(7px); 
+    } 
+    .lp-hamburger.open span:nth-child(2) {
+        opacity: 0; 
+    } 
+    .lp-hamburger.open span:nth-child(3) {
+        transform: rotate(-45deg) translateY(-7px); 
+    } 
+
+    .lp-mobile-menu {
+        display: none; 
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        background: rgba(17, 17, 17, 0.97); 
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        z-index: 99;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid rgba(52, 235, 143, 0.15);
+    } 
+
+    .lp-mobile-menu.open {
+        display: flex; 
+    } 
+    .lp-mobile-menu a {
+        font-family: var(--major-font);
+        font-size: 1rem; 
+        font-weight: 600;
+        color: var(--white);
+        text-decoration: none;
+        padding: 0.85rem 1rem;
+        border-radius: 8px;
+        transition: background 0.2s, color 0.2s;
+        text-align: center;
+    } 
+
+    .lp-mobile-menu a:hover {
+        background: rgba(52, 235, 143, 0.12);
+        color: var(--primary); 
+    }
+    .lp-mobile-menu .btn-login {
+        border: 1.5px solid var(--primary);
+        color: var(--primary); 
+    } 
+    .lp-mobile-menu .btn-signup {
+        background: var(--primary);
+        color: var(--black);
+        margin-top: 0.5rem; 
+    }  
+
+    /* Hero Section */ 
+
+    .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 2.5rem;
+        padding-top: 68px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        min-height: 100vh;
+        background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(52, 235, 143, 0.08) 0%, transparent 70%), 
+                    radial-gradient(ellipse 50% 60% at 10% 80%, rgba(31, 201, 114, 0.05) 0%, transparent 60%), var(--dark); 
+    } 
+
+    .hero::before {
+        content: ''; 
+        position: absolute;
+        top: -200px;
+        right: -200px;
+        width: 700px;
+        height: 700px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(52, 235, 143, 0.06) 0%, transparent 70%); 
+        pointer-events: none;
+    } 
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0; 
+        background-image: linear-gradient(rgba(52, 235, 143, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(52, 235, 143, 0.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+    } 
+
+    .hero-content {
+        max-width: 680px;
+        position: relative;
+        z-index: 2;
+        animation: fadeup 0.8s ease both; 
+    } 
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: rgba(52, 235, 143, 0.1);
+        border: 1px solid rgba(52, 235, 143, 0.25);
+        padding: 0.35rem 1rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04rem;
+        text-transform: uppercase;
+        margin-bottom: 1.75rem; 
+    } 
+
+    .hero-badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary);
+        animation: pulse 2s infinite;
+    } 
+
+    @keyframes pulse { 0%, 100%{opacity:1} 50%{opacity:0.3} } 
+
+    .hero h1 {
+        font-family: var(--major-font);
+        font-size: clamp(2.5rem, 5.5vw, 4rem);
+        font-weight: 700;
+        line-height: 1.15;
+        margin-bottom: 1.5rem;
+        color: var(--white);
+    } 
+
+    .hero h1 span { 
+        color: var(--primary);
+    } 
+
+    .hero p {
+        font-size: 1.1rem;
+        font-weight: 300;
+        line-height: 1.75;
+        color: rgba(245,247,246,0.7);
+        margin-bottom: 2.5rem;
+        max-width: 520px;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .btn-cta-primary {
+        font-family: var(--major-font);
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 0.85rem 2rem;
+        border-radius: 10px;
+        background: var(--primary);
+        color: var(--black);
+        text-decoration: none;
+        transition: background 0.2s, transform 0.15s;
+        border: none;
+    }
+
+    .btn-cta-primary:hover { 
+        background: var(--primary-dark); 
+        transform: translateY(-2px); 
+    }
+
+    .btn-cta-secondary {
+        font-family: var(--major-font);
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0.85rem 2rem;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--white);
+        text-decoration: none;
+        border: 1.5px solid rgba(245,247,246,0.25);
+        transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-cta-secondary:hover { 
+        border-color: var(--primary); 
+        color: var(--primary);
+    } 
+
+    /* Features */ 
+
+    .features {
+        padding: 6rem 2.5rem;
+        background: #0e0e0e; 
+        position: relative;
+    } 
+
+    .section-label {
+        text-align: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-family: var(--major-font);
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+        font-weight: 700;
+        text-align: center;
+        color: var(--white);
+        margin-bottom: 0.75rem;
+    }
+
+    .section-sub {
+        text-align: center;
+        color: rgba(245,247,246,0.55);
+        font-size: 1rem;
+        max-width: 480px;
+        margin: 0 auto 3.5rem;
+        line-height: 1.7;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 16px;
+        padding: 2rem 1.75rem;
+        transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+        border-color: rgba(52,235,143,0.3);
+        transform: translateY(-3px);
+    }
+
+    .feature-icon {
+        font-size: 1.7rem;
+        margin-bottom: 1.25rem;
+        display: block;
+    }
+
+    .feature-card h3 {
+        font-family: var(--major-font);
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 0.6rem;
+    }
+
+    .feature-card p {
+        font-size: 0.9rem;
+        color: rgba(245,247,246,0.55);
+        line-height: 1.65;
+    }  
+
+    /* Stats */ 
+
+    .stats {
+        padding: 5rem 2.5rem;
+        background: var(--dark);
+    }
+
+    .stats-inner {
+        max-width: 900px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-family: var(--major-font);
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(245,247,246,0.5);
+        margin-top: 0.35rem;
+        display: block;
+    }
+    
+    /* CTA Section */
+
+    .cta-section {
+        padding: 6rem 2.5rem;
+        background: #0e0e0e;
+        text-align: center;
+    }
+
+    .cta-box {
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    .cta-box h2 {
+        font-family: var(--major-font);
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 1rem;
+    }
+
+    .cta-box p {
+        color: rgba(245,247,246,0.55);
+        margin-bottom: 2rem;
+        line-height: 1.7;
+    }
+    
+    /* Footer */
+
+    footer {
+        padding: 2rem 2.5rem;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: var(--dark);
+    }
+
+    footer .brand {
+        font-family: var(--major-font);
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    footer .copy {
+        font-size: 0.82rem;
+        color: rgba(245,247,246,0.35);
+    }
+
+    footer nav a {
+        font-size: 0.82rem;
+        color: rgba(245,247,246,0.4);
+        text-decoration: none;
+        margin-left: 1.25rem;
+        transition: color 0.2s;
+    }
+
+    footer nav a:hover { 
+        color: var(--primary);
+    }
+    
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(24px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+        .lp-nav-links { display: none; }
+        .lp-hamburger { display: flex; }
+        .hero { padding: 5rem 1.5rem 3rem; text-align: center; }
+        .hero p { margin-left: auto; margin-right: auto; }
+        .hero-cta { justify-content: center; }
+        .features, .stats, .cta-section { padding: 4rem 1.5rem; }
+        footer { flex-direction: column; align-items: flex-start; }
+        footer nav { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        footer nav a { margin-left: 0; }
+    } 
+
+</style>
+
+{% endblock %} 
+ 
+{% block navbar %}
+<nav class="lp-nav">
+  <a class="lp-nav-brand" href="/">Flowlytics</a>
+ 
+  <div class="lp-nav-links">
+    <a href="#features">Features</a>
+    <a href="/login" class="btn-login">Login</a>
+    <a href="/register" class="btn-signup">Get Started</a>
+  </div>
+ 
+  <button class="lp-hamburger" id="hamburgerBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+ 
+<div class="lp-mobile-menu" id="mobileMenu">
+  <a href="#features" onclick="closeMobileMenu()">Features</a>
+  <a href="/login" class="btn-login">Login</a>
+  <a href="/register" class="btn-signup">Get Started</a>
+</div>
+{% endblock %}
+ 
+{% block content %}
+ 
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Personal Finance Tracker
+    </div>
+    <h1>Take <span>Control</span> of Your Financial Flow</h1>
+    <p>Track transactions, manage budgets, monitor subscriptions, and understand your burn rate — all in one clean, powerful dashboard.</p>
+    <div class="hero-cta">
+      <a href="/register" class="btn-cta-primary">Get Started Free</a>
+      <a href="/login" class="btn-cta-secondary">Sign In</a>
+    </div>
+  </div>
+</section>
+ 
+<!-- FEATURES -->
+<section class="features" id="features">
+  <p class="section-label">What You Get</p>
+  <h2 class="section-title">Everything you need to stay on track</h2>
+  <p class="section-sub">Built for people who want clarity over their money without the spreadsheet hassle.</p>
+ 
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">💸</span>
+      <h3>Transactions</h3>
+      <p>Log and categorize every expense and income entry. See where your money is going at a glance.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎯</span>
+      <h3>Budgets</h3>
+      <p>Set spending limits by category and get instant feedback on how you're tracking against your goals.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📈</span>
+      <h3>Income Tracking</h3>
+      <p>Record all your income sources and see the full picture of your cash flow month over month.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔁</span>
+      <h3>Subscriptions</h3>
+      <p>Never lose track of recurring charges. Monitor every subscription in one consolidated view.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔥</span>
+      <h3>Burn Rate Report</h3>
+      <p>Understand how quickly you're spending your available funds with a clear burn rate breakdown.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <h3>Budget Status</h3>
+      <p>Real-time reports showing which budgets are healthy, at risk, or already exceeded this period.</p>
+    </div>
+  </div>
+</section>
+ 
+<!-- STATS -->
+<section class="stats">
+  <div class="stats-inner">
+    <div>
+      <span class="stat-value">6+</span>
+      <span class="stat-label">Finance Tools Built-In</span>
+    </div>
+    <div>
+      <span class="stat-value">100%</span>
+      <span class="stat-label">Data Under Your Control</span>
+    </div>
+    <div>
+      <span class="stat-value">Zero</span>
+      <span class="stat-label">Hidden Fees</span>
+    </div>
+  </div>
+</section>
+ 
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <h2>Ready to take control of your finances?</h2>
+    <p>Join Flowlytics today and start making smarter decisions about your money — from day one.</p>
+    <a href="/register" class="btn-cta-primary">Create Your Free Account</a>
+  </div>
+</section>
+ 
+<footer>
+  <span class="brand">Flowlytics</span>
+  <nav>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+    <a href="/docs">API Docs</a>
+  </nav>
+  <span class="copy">© 2025 Flowlytics. All rights reserved.</span>
+</footer>
+ 
+<script>
+  const btn = document.getElementById('hamburgerBtn');
+  const menu = document.getElementById('mobileMenu');
+ 
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+  });
+ 
+  function closeMobileMenu() {
+    btn.classList.remove('open');
+    menu.classList.remove('open');
+  }
+ 
+  // Close mobile menu on outside click
+  document.addEventListener('click', (e) => {
+    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+      closeMobileMenu();
+    }
+  });
+</script>
+ 
+{% endblock %} 
