@@ -6,7 +6,7 @@
 
 {% block list_content %}
     {% for subscription in subscriptions %}
-        <a class="list-card" href="/api/subscriptions/{{subscription.id}}">
+        <a class="list-card link {% if selected_subscription %}{% if subscription.id == selected_subscription.id %}active{% endif %}{% endif %}" href="/api/subscriptions/{{subscription.id}}">
             {{subscription.name}} | 
             <strong>
                 {% if subscription.active == true %}
@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block list_footer %}
-    <div class="button span" href="/api/subscriptions/create">New Subscription</div>
+    <a class="button span" href="/api/subscriptions/create">New Subscription</a>
 {% endblock %}
 
 {% block details_header %}
@@ -73,6 +73,8 @@
             {% if form_action == 'update' %}
                 <option value="true" {% if selected_subscription.active %}selected{% endif %}>Active</option>
                 <option value="false" {% if selected_subscription.active is false %}selected{% endif %}>Inactive</option>
+            {% else %}
+                <option value="true" selected>Active</option>
             {% endif %}
         </select>
     </form>

@@ -1,0 +1,37 @@
+{% extends "view-page.html" %}
+
+{% block title %}Budgets{% endblock %}
+
+{% block list_header %}Budgets{% endblock %}
+
+{% block list_content %}
+    {% for budget in budgets %}
+        <a class="list-card link {% if selected_budget %}{% if budget.id == selected_budget.id %}active{% endif %}{% endif %}" href="/api/budgets/{{budget.id}}">
+            {{budget.category.value}} | <strong>{{budget.period.value}}</strong>
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <a class="button" href="/api/budgets/create">New Budget</a>
+    <a class="button" href="/api/reports/budget-status">View Status</a>
+{% endblock %}
+
+{% block details_header %}Budget Details{% endblock %}
+
+{% block details_content %}
+    {% if selected_budget is not none %}
+        <div>Category: {{selected_budget.category.value}}</div>
+        <div>Limit: ${{selected_budget.limit_amount}}</div>
+        <div>Period: {{selected_budget.period.value}}</div>
+    {% else %}
+        <div>No budget selected.</div>
+    {% endif %}
+{% endblock %}
+
+{% block details_footer %}
+    {% if selected_budget is not none %}
+        <a class="button" href="/api/budgets/update/{{selected_budget.id}}">Update Budget</a>
+        <a class="button" href="/api/budgets/delete/{{selected_budget.id}}">Delete Budget</a>
+    {% endif %}
+{% endblock %}

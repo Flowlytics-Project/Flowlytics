@@ -53,8 +53,7 @@ class IncomeRepository:
             income.income_date = data.income_date
         if data.is_recurring is not None:
             income.is_recurring = data.is_recurring
-        if data.recurrence_period is not None:
-            income.recurrence_period = data.recurrence_period
+        income.recurrence_period = data.recurrence_period
         try:
             self.db.add(income)
             self.db.commit()

@@ -17,7 +17,7 @@ from app.schemas.finance import (
     SubscriptionCreate, SubscriptionUpdate, SubscriptionResponse,
     BudgetCreate, BudgetUpdate, BudgetResponse,
     IncomeCreate, IncomeUpdate, IncomeResponse,
-    BurnRateReport, BudgetStatus, BillingCycle
+    BurnRateReport, BudgetStatus, BillingCycle, BudgetPeriod
 ) 
 from app.models.finance import TransactionCategory 
 
@@ -146,7 +146,7 @@ async def update_transaction(user: AuthDep, tx_id: int, db: SessionDep, request:
         category_field = TransactionCategory.UTILITIES
     elif category_field == "other":
         category_field = TransactionCategory.OTHER
-    data = TransactionCreate(amount=amount_field, category=category_field, description=description_field)
+    data = TransactionUpdate(amount=amount_field, category=category_field, description=description_field)
     typer.echo("Updating transaction")
     check = _get_service(db).update_transaction(user.id, tx_id, data) 
     if check:
@@ -233,7 +233,7 @@ async def get_subscription(sub_id: int, user: AuthDep, request: Request, db: Ses
     )
 
 @api_router.get("/subscriptions/update/{sub_id}", response_class=HTMLResponse, status_code=201, tags=["Subscriptions"]) 
-async def update_transaction(user: AuthDep, sub_id: int, db: SessionDep, request: Request, active_only = False): 
+async def update_subscription(user: AuthDep, sub_id: int, db: SessionDep, request: Request, active_only = False): 
      subscriptions = _get_service(db).list_subscriptions(user.id, active_only)
      selected_subscription = _get_service(db).get_subscription(user.id, sub_id)
      form_action = "update"
@@ -258,7 +258,7 @@ async def update_subscription(user: AuthDep, sub_id: int, db: SessionDep, reques
         billying_cycle_field = BillingCycle.QUARTERLY
     elif billing_cycle_field == "yearly":
         billying_cycle_field = BillingCycle.YEARLY
-    data = SubscriptionCreate(name=name_field, amount=amount_field, billing_cycle=billing_cycle_field, next_due=next_due_field, active=active_field)
+    data = SubscriptionUpdate(name=name_field, amount=amount_field, billing_cycle=billing_cycle_field, next_due=next_due_field, active=active_field)
     typer.echo("Updating subscription")
     check = _get_service(db).update_subscription(user.id, sub_id, data) 
     if check:
@@ -274,80 +274,285 @@ async def delete_subscription(sub_id: int, user: AuthDep, request: Request, db: 
 
 # -- Budgets --
 
-@api_router.post("/budgets", response_model=BudgetResponse, status_code=201, tags=["Budgets"])
-async def create_budget(data: BudgetCreate, user: AuthDep, db: SessionDep):
-    return _get_service(db).create_budget(user.id, data)
+@api_router.get("/budgets/create", response_class=HTMLResponse, status_code=201, tags=["Budgets"]) 
+async def create_budget(user: AuthDep, db: SessionDep, request: Request): 
+     budgets = _get_service(db).list_budgets(user.id)
+     selected_budget = None
+     form_action = "create"
+     return templates.TemplateResponse(
+        request=request, 
+        name="budgets-form.html",
+        context={
+            "user": user,
+            "budgets": budgets,
+            "selected_budget": selected_budget,
+            "form_action": form_action
+        }
+    )
+
+@api_router.post("/budgets/create", response_model=BudgetResponse, status_code=201, tags=["Budgets"]) 
+async def create_budget(user: AuthDep, db: SessionDep, request: Request, limit_field: str = Form(), category_field: str = Form(), period_field: str = Form()): 
+    if category_field == "food":
+        category_field = TransactionCategory.FOOD
+    elif category_field == "transport":
+        category_field = TransactionCategory.TRANSPORT
+    elif category_field == "housing":
+        category_field = TransactionCategory.HOUSING
+    elif category_field == "entertainment":
+        category_field = TransactionCategory.ENTERTAINMENT
+    elif category_field == "health":
+        category_field = TransactionCategory.HEALTH
+    elif category_field == "education":
+        category_field = TransactionCategory.EDUCATION
+    elif category_field == "clothing":
+        category_field = TransactionCategory.CLOTHING
+    elif category_field == "utilities":
+        category_field = TransactionCategory.UTILITIES
+    elif category_field == "other":
+        category_field = TransactionCategory.OTHER
+    data = BudgetCreate(category=category_field, limit_amount=limit_field, period=period_field)
+    check = _get_service(db).create_budget(user.id, data) 
+    if check:
+        typer.echo("Budget Created")
+    return RedirectResponse(url=request.url_for('list_budgets'), status_code=status.HTTP_303_SEE_OTHER)
 
 
-@api_router.get("/budgets", response_model=list[BudgetResponse], tags=["Budgets"])
-async def list_budgets(user: AuthDep, db: SessionDep):
-    return _get_service(db).list_budgets(user.id)
+@api_router.get("/budgets", response_class=HTMLResponse, tags=["Budgets"])
+async def list_budgets(
+     user: AuthDep,
+     request: Request,
+     db: SessionDep,
+): 
+    budgets = _get_service(db).list_budgets(user.id)
+    selected_budget = None
+    return templates.TemplateResponse(
+        request=request, 
+        name="budgets.html",
+        context={
+            "user": user,
+            "budgets": budgets,
+            "selected_budget": selected_budget
+        }
+    )
 
 
-@api_router.get("/budgets/{budget_id}", response_model=BudgetResponse, tags=["Budgets"])
-async def get_budget(budget_id: int, user: AuthDep, db: SessionDep):
-    return _get_service(db).get_budget(user.id, budget_id)
+@api_router.get("/budgets/{budget_id}", response_class=HTMLResponse, tags=["Budgets"])
+async def get_budget(budget_id: int, user: AuthDep, db: SessionDep, request: Request):
+    budgets = _get_service(db).list_budgets(user.id)
+    selected_budget = _get_service(db).get_budget(user.id, budget_id)
+    return templates.TemplateResponse(
+        request=request, 
+        name="budgets.html",
+        context={
+            "user": user,
+            "budgets": budgets,
+            "selected_budget": selected_budget
+        }
+    )
 
 
-@api_router.put("/budgets/{budget_id}", response_model=BudgetResponse, tags=["Budgets"])
-async def update_budget(budget_id: int, data: BudgetUpdate, user: AuthDep, db: SessionDep):
-    return _get_service(db).update_budget(user.id, budget_id, data)
+@api_router.get("/budgets/update/{budget_id}", response_class=HTMLResponse, status_code=201, tags=["Budgets"]) 
+async def update_budget(user: AuthDep, budget_id: int, db: SessionDep, request: Request): 
+     budgets = _get_service(db).list_budgets(user.id)
+     selected_budget = _get_service(db).get_budget(user.id, budget_id)
+     form_action = "update"
+     return templates.TemplateResponse(
+        request=request, 
+        name="budgets-form.html",
+        context={
+            "user": user,
+            "budgets": budgets,
+            "selected_budget": selected_budget,
+            "form_action": form_action
+        }
+    )
+
+@api_router.post("/budgets/update/{budget_id}", response_model=BudgetResponse, tags=["Budgets"])
+async def update_transaction(user: AuthDep, budget_id: int, db: SessionDep, request: Request, limit_field: str = Form(), category_field: str = Form(), period_field: str = Form()): 
+    if category_field == "food":
+        category_field = TransactionCategory.FOOD
+    elif category_field == "transport":
+        category_field = TransactionCategory.TRANSPORT
+    elif category_field == "housing":
+        category_field = TransactionCategory.HOUSING
+    elif category_field == "entertainment":
+        category_field = TransactionCategory.ENTERTAINMENT
+    elif category_field == "health":
+        category_field = TransactionCategory.HEALTH
+    elif category_field == "education":
+        category_field = TransactionCategory.EDUCATION
+    elif category_field == "clothing":
+        category_field = TransactionCategory.CLOTHING
+    elif category_field == "utilities":
+        category_field = TransactionCategory.UTILITIES
+    elif category_field == "other":
+        category_field = TransactionCategory.OTHER
+    data = BudgetUpdate(category=category_field, limit_amount=limit_field, period=period_field)
+    typer.echo("Updating budget")
+    check = _get_service(db).update_budget(user.id, budget_id, data) 
+    if check:
+        typer.echo("Budget Updated")
+    else:
+        typer.echo("Budget not found")
+    return RedirectResponse(url=request.url_for('list_budgets'), status_code=status.HTTP_303_SEE_OTHER)
 
 
-@api_router.delete("/budgets/{budget_id}", status_code=204, tags=["Budgets"])
-async def delete_budget(budget_id: int, user: AuthDep, db: SessionDep):
+@api_router.get("/budgets/delete/{budget_id}", status_code=204, tags=["Budgets"])
+async def delete_budget(budget_id: int, user: AuthDep, request: Request, db: SessionDep):
     _get_service(db).delete_budget(user.id, budget_id)
+    return RedirectResponse(url=request.url_for('list_budgets'), status_code=status.HTTP_303_SEE_OTHER)
 
 
 # -- Incomes --
 
-@api_router.post("/incomes", response_model=IncomeResponse, status_code=201, tags=["Incomes"])
-async def create_income(data: IncomeCreate, user: AuthDep, db: SessionDep):
-    return _get_service(db).create_income(user.id, data)
+@api_router.get("/incomes/create", response_class=HTMLResponse, status_code=201, tags=["Incomes"]) 
+async def create_income(user: AuthDep, db: SessionDep, request: Request): 
+     incomes = _get_service(db).list_incomes(user.id, start_date=None, end_date=None)
+     selected_income = None
+     form_action = "create"
+     return templates.TemplateResponse(
+        request=request, 
+        name="incomes-form.html",
+        context={
+            "user": user,
+            "incomes": incomes,
+            "selected_income": selected_income,
+            "form_action": form_action
+        }
+    )
+
+@api_router.post("/incomes/create", response_model=IncomeResponse, status_code=201, tags=["Incomes"]) 
+async def create_income(user: AuthDep, db: SessionDep, request: Request, source_field: str = Form(), amount_field: str = Form(), is_recurring_field: bool = Form(), recurrence_period_field: str = Form()): 
+    if recurrence_period_field == "weekly":
+        recurrence_period_field = BudgetPeriod.WEEKLY
+    elif recurrence_period_field == "monthly":
+        recurrence_period_field = BudgetPeriod.MONTHLY
+    elif recurrence_period_field == "yearly":
+        recurrence_period_field = BudgetPeriod.YEARLY
+    elif recurrence_period_field == "none":
+        recurrence_period_field = None
+    data = IncomeCreate(source=source_field, amount=amount_field, is_recurring=is_recurring_field, recurrence_period=recurrence_period_field)
+    check = _get_service(db).create_income(user.id, data) 
+    if check:
+        typer.echo("Income Created")
+    return RedirectResponse(url=request.url_for('list_incomes'), status_code=status.HTTP_303_SEE_OTHER)
 
 
-@api_router.get("/incomes", response_model=list[IncomeResponse], tags=["Incomes"])
+@api_router.get("/incomes", response_class=HTMLResponse, tags=["Incomes"])
 async def list_incomes(
-    user: AuthDep,
-    db: SessionDep,
-    start_date: Optional[date] = None,
-    end_date: Optional[date] = None,
-):
-    return _get_service(db).list_incomes(user.id, start_date, end_date)
+     user: AuthDep,
+     request: Request,
+     db: SessionDep,
+     start_date: Optional[date] = None,
+     end_date: Optional[date] = None,
+): 
+    incomes = _get_service(db).list_incomes(user.id, start_date, end_date)
+    selected_income = None
+    return templates.TemplateResponse(
+        request=request, 
+        name="incomes.html",
+        context={
+            "user": user,
+            "incomes": incomes,
+            "selected_income": selected_income
+        }
+    )
 
 
-@api_router.get("/incomes/{income_id}", response_model=IncomeResponse, tags=["Incomes"])
-async def get_income(income_id: int, user: AuthDep, db: SessionDep):
-    return _get_service(db).get_income(user.id, income_id)
+@api_router.get("/incomes/{income_id}", response_class=HTMLResponse, tags=["Incomes"])
+async def get_income(income_id: int, user: AuthDep, db: SessionDep, request: Request):
+    incomes = _get_service(db).list_incomes(user.id, start_date=None, end_date=None)
+    selected_income = _get_service(db).get_income(user.id, income_id)
+    return templates.TemplateResponse(
+        request=request, 
+        name="incomes.html",
+        context={
+            "user": user,
+            "incomes": incomes,
+            "selected_income": selected_income
+        }
+    )
 
 
-@api_router.put("/incomes/{income_id}", response_model=IncomeResponse, tags=["Incomes"])
-async def update_income(income_id: int, data: IncomeUpdate, user: AuthDep, db: SessionDep):
-    return _get_service(db).update_income(user.id, income_id, data)
+@api_router.get("/incomes/update/{income_id}", response_class=HTMLResponse, status_code=201, tags=["Incomes"]) 
+async def update_income(user: AuthDep, income_id: int, db: SessionDep, request: Request): 
+     incomes = _get_service(db).list_incomes(user.id, start_date=None, end_date=None)
+     selected_income = _get_service(db).get_income(user.id, income_id)
+     form_action = "update"
+     return templates.TemplateResponse(
+        request=request, 
+        name="incomes-form.html",
+        context={
+            "user": user,
+            "incomes": incomes,
+            "selected_income": selected_income,
+            "form_action": form_action
+        }
+    )
 
 
-@api_router.delete("/incomes/{income_id}", status_code=204, tags=["Incomes"])
-async def delete_income(income_id: int, user: AuthDep, db: SessionDep):
+@api_router.post("/incomes/update/{income_id}", response_model=IncomeResponse, tags=["Transactions"])
+async def update_income(user: AuthDep, income_id: int, db: SessionDep, request: Request, source_field: str = Form(), amount_field: str = Form(), is_recurring_field: bool = Form(), recurrence_period_field: str = Form()): 
+    if recurrence_period_field == "weekly":
+        recurrence_period_field = BudgetPeriod.WEEKLY
+    elif recurrence_period_field == "monthly":
+        recurrence_period_field = BudgetPeriod.MONTHLY
+    elif recurrence_period_field == "yearly":
+        recurrence_period_field = BudgetPeriod.YEARLY
+    if recurrence_period_field == "none":
+        recurrence_period_field = None
+    data = IncomeUpdate(source=source_field, amount=amount_field, is_recurring=is_recurring_field, recurrence_period=recurrence_period_field)
+    typer.echo("Updating Income")
+    check = _get_service(db).update_income(user.id, income_id, data) 
+    if check:
+        typer.echo("Income Updated")
+    else:
+        typer.echo("Income not found")
+    return RedirectResponse(url=request.url_for('list_incomes'), status_code=status.HTTP_303_SEE_OTHER)
+
+
+@api_router.get("/incomes/delete/{income_id}", status_code=204, tags=["Incomes"])
+async def delete_income(income_id: int, user: AuthDep, request: Request, db: SessionDep):
     _get_service(db).delete_income(user.id, income_id)
+    return RedirectResponse(url=request.url_for('list_incomes'), status_code=status.HTTP_303_SEE_OTHER)
 
 
 # -- Reports -- 
 
-@api_router.get("/reports/burn-rate", response_model=BurnRateReport, tags=["Reports"])
+@api_router.get("/reports/burn-rate", response_class=HTMLResponse, tags=["Reports"])
 async def burn_rate(
     user: AuthDep,
     db: SessionDep,
+    request: Request,
     year: int = Query(default=datetime.now().year),
     month: int = Query(default=datetime.now().month, ge=1, le=12),
 ):
-    return _get_service(db).get_burn_rate(user.id, year, month)
+    report = _get_service(db).get_burn_rate(user.id, year, month)
+    return templates.TemplateResponse(
+        request=request, 
+        name="burn-rate-report.html",
+        context={
+            "user": user,
+            "report": report
+        }
+    )
 
 
-@api_router.get("/reports/budget-status", response_model=list[BudgetStatus], tags=["Reports"])
+
+@api_router.get("/reports/budget-status", response_class=HTMLResponse, tags=["Reports"])
 async def budget_status(
     user: AuthDep,
     db: SessionDep,
+    request: Request,
     year: int = Query(default=datetime.now().year),
     month: int = Query(default=datetime.now().month, ge=1, le=12),
 ):
-    return _get_service(db).get_budget_status(user.id, year, month)
+    report = _get_service(db).get_budget_status(user.id, year, month)
+    return templates.TemplateResponse(
+        request=request, 
+        name="budget-status.html",
+        context={
+            "user": user,
+            "report": report
+        }
+    )

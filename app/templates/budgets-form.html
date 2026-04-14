@@ -1,41 +1,41 @@
 {% extends "view-page.html" %}
 
-{% block title %}Transactions{% endblock %}
+{% block title %}Budgets{% endblock %}
 
-{% block list_header %}Transactions{% endblock %}
+{% block list_header %}Budgets{% endblock %}
 
 {% block list_content %}
-    {% for transaction in transactions %}
-        <a class="list-card link {% if selected_transaction %}{% if transaction.id == selected_transaction.id %}active{% endif %}{% endif %}" href="/api/transactions/{{transaction.id}}">
-            {{transaction.transaction_date}} | <strong>${{transaction.amount}}</strong>
+    {% for budget in budgets %}
+        <a class="list-card link {% if selected_budget %}{% if budget.id == selected_budget.id %}active{% endif %}{% endif %}" href="/api/budgets/{{budget.id}}">
+            {{budget.category.value}} | <strong>{{budget.period.value}}</strong>
         </a>
     {% endfor %}
 {% endblock %}
 
 {% block list_footer %}
-    <a class="button span" href="/api/transactions/create">New Transaction</a>
+    <a class="button span" href="/api/budgets/create">New Budget</a>
 {% endblock %}
 
 {% block details_header %}
 {% if form_action == 'create' %}
-    <Strong>New Transaction</Strong>
+    <Strong>New Budget</Strong>
 {% elif form_action == 'update' %}
-    <Strong>Update Transaction</Strong>
+    <Strong>Update Budget</Strong>
 {% else %}
-    <Strong>No Transaction Selected</Strong>
+    <Strong>No Budget Selected</Strong>
 {% endif %}
 {% endblock %}
 
 {% block details_content %}
     {% if form_action == 'create' %}
-        <form id="form" name="form" class="form" method="POST" action="/api/transactions/create">
+        <form id="form" name="form" class="form" method="POST" action="/api/budgets/create">
     {% else %}
-        <form id="form" name="form" class="form" method="POST" action="/api/transactions/update/{{selected_transaction.id}}">
+        <form id="form" name="form" class="form" method="POST" action="/api/budgets/update/{{selected_budget.id}}">
     {% endif %}
-        <label for="amount_field">Amount:</label>
+        <label for="limit_field">Limit:</label>
         <input 
-            name="amount_field"
-            value="{% if form_action == 'update' %}{{selected_transaction.amount}}{% endif %}"
+            name="limit_field"
+            value="{% if form_action == 'update' %}{{selected_budget.limit_amount}}{% endif %}"
             type ="number"
             placeholder="0000"
         >
@@ -52,13 +52,13 @@
             <option value="utilities" class="select">Utilities</option>
             <option value="other" class="select">Other</option>
         </select>
-        <label for="description_field">Description:</label>
-        <input 
-            name="description_field"
-            value="{% if form_action == 'update' %}{{selected_transaction.description}}{% endif %}"
-            type ="text"
-            placeholder="Description"
-        >
+        <label for="period_field">Period:</label>
+        <select name="period_field" required>
+            <option value="" disabled selected class="select">[Select Period]</option>
+            <option value="weekly" class="select">Weekly</option>
+            <option value="monthly" class="select">Monthly</option>
+            <option value="yearly" class="select">Yearly</option>
+        </select>
     </form>
 {% endblock %}
 

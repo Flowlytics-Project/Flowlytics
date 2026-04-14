@@ -82,7 +82,7 @@
     {
         background-color: var(--black);
         height: 100%;
-        width: 99%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -155,14 +155,31 @@
         transition: color 0.2s, background-color 0.2s;
         text-decoration: none;
         color: var(--white);
+
+        &.active
+        {
+            background-color: var(--primary);
+            color: var(--black);
+        }
     }
 
     .list-card:hover
     {
-        background-color: var(--primary);
-        opacity: 50%;
-        color: var(--black);
-        cursor: pointer;
+        &.link
+        {
+            background-color: var(--primary);
+            opacity: 50%;
+            color: var(--black);
+            cursor: pointer;
+        }
+    }
+
+    .form
+    {
+        display: flex;
+        flex-direction: column;
+        margin: 2px;
+        width: 50%;
     }
 
     .button
@@ -201,6 +218,7 @@
 {% block navbar %}
     <div class="navbar">
         <div class = "nav-item-section">
+            <a class="nav-item" href = "/app">Home</a>
             <a class="nav-item" href = "/api/transactions">Transactions</a>
             <a class="nav-item" href = "/api/budgets">Budgets</a>
             <a class="nav-item" href = "/api/incomes">Incomes</a>

@@ -1,0 +1,77 @@
+{% extends "view-page.html" %}
+
+{% block title %}Incomes{% endblock %}
+
+{% block list_header %}Incomes{% endblock %}
+
+{% block list_content %}
+    {% for income in incomes %}
+        <a class="list-card link {% if selected_income %}{% if income.id == selected_income.id %}active{% endif %}{% endif %}" href="/api/incomes/{{income.id}}">
+            {{income.source}}
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <a class="button span" href="/api/incomes/create">New Income</a>
+{% endblock %}
+
+{% block details_header %}
+{% if form_action == 'create' %}
+    <Strong>New Income</Strong>
+{% elif form_action == 'update' %}
+    <Strong>Update Income</Strong>
+{% else %}
+    <Strong>No Income Selected</Strong>
+{% endif %}
+{% endblock %}
+
+{% block details_content %}
+    {% if form_action == 'create' %}
+        <form id="form" name="form" class="form" method="POST" action="/api/incomes/create">
+    {% else %}
+        <form id="form" name="form" class="form" method="POST" action="/api/incomes/update/{{selected_income.id}}">
+    {% endif %}
+        <label for="source_field">Name:</label>
+        <input 
+            name="source_field"
+            value="{% if form_action == 'update' %}{{selected_income.source}}{% endif %}"
+            type ="text"
+            placeholder="Source"
+        >
+        <label for="amount_field">Amount:</label>
+        <input 
+            name="amount_field"
+            value="{% if form_action == 'update' %}{{selected_income.amount}}{% endif %}"
+            type ="number"
+            placeholder="0000"
+        >
+        <label for="is_recurring_field">Recurring:</label>
+        <select name="is_recurring_field" required>
+            {% if form_action == 'create' %}
+                <option value="" disabled selected>[Yes/No]</option>
+                <option value="true" class="select">Yes</option>
+                <option value="false" class="select">No</option>
+            {% elif form_action == 'update' %}
+                <option value="true" {% if selected_income.is_recurring %}selected{% endif %} class="select">Yes</option>
+                <option value="false" {% if selected_income.is_recurring is false %}selected{% endif %} class="select">No</option>
+            {% endif %}
+        </select>
+        <label for="recurrence_period_field">Recurrence Period:</label>
+        <select name="recurrence_period_field" required>
+            <option value="" disabled selected class="select">[Select Period]</option>
+            <option value="none" class="select">None</option>
+            <option value="weekly" class="select">Weekly</option>
+            <option value="monthly" class="select">Monthly</option>
+            <option value="yearly" class="select">Yearly</option>
+        </select>
+    </form>
+{% endblock %}
+
+{% block details_footer %}
+    {% if form_action == 'create' %}
+        <button class="button" type="submit" form="form">Create</button>
+    {% else %}
+        <button class="button" type="submit" form="form">Save</button>
+    {% endif %}
+{% endblock %}

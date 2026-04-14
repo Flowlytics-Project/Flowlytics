@@ -1,0 +1,47 @@
+{% extends "view-page.html" %}
+
+{% block title %}Incomes{% endblock %}
+
+{% block list_header %}Incomes{% endblock %}
+
+{% block list_content %}
+    {% for income in incomes %}
+        <a class="list-card link {% if selected_income %}{% if income.id == selected_income.id %}active{% endif %}{% endif %}" href="/api/incomes/{{income.id}}">
+            {{income.source}}
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block list_footer %}
+    <a class="button span" href="/api/incomes/create">New Income</a>
+{% endblock %}
+
+{% block details_header %}Income Details{% endblock %}
+
+{% block details_content %}
+    {% if selected_income is not none %}
+        <div>Source: {{selected_income.source}}</div>
+        <div>Amount: ${{selected_income.amount}}</div>
+        <div>
+            {% if selected_income.is_recurring == true %}
+                Recurring: Yes
+            {% else %}
+                Recurring: No
+            {% endif %}
+        </div>
+        {% if selected_income.recurrence_period %}
+            <div>Recurrence Period: {{selected_income.recurrence_period.value}}</div>
+        {% else %}
+            <div>Recurrence Period: none</div>
+        {% endif %}
+    {% else %}
+        <div>No income selected.</div>
+    {% endif %}
+{% endblock %}
+
+{% block details_footer %}
+    {% if selected_income is not none %}
+        <a class="button" href="/api/incomes/update/{{selected_income.id}}">Update Income</a>
+        <a class="button" href="/api/incomes/delete/{{selected_income.id}}">Delete Income</a>
+    {% endif %}
+{% endblock %}

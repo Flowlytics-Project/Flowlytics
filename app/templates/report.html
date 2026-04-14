@@ -1,0 +1,12 @@
+{% extends "authenticated-base.html" %}
+
+{% block content %}
+    <div class="page-content">
+        <!-- <h2 class="heading">Welcome user</h2> -->
+        <div class="pane">
+            <div class="pane-header">{% block report_header %}{% endblock %}</div>
+            <div class="pane-content">{% block report_content %}{% endblock %}</div>
+            <div class="pane-footer">{% block report_footer %}{% endblock %}</div>
+        </div>
+    </div>
+{% endblock %}

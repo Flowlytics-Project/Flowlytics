@@ -1,0 +1,22 @@
+{% extends "report.html" %}
+
+{% block title %}Budget Status{% endblock %}
+
+{% block report_header %}Budget Status Report{% endblock %}
+
+{% block report_content %}
+    {% for status in report %}
+        <div>
+            <div>Category: {{status.category.value}}</div>
+            <div>Limit: ${{status.limit_amount}}</div>
+            <div>Spent: ${{status.spent}}</div>
+            <div>Remaining: ${{status.remaining}}</div>
+            <div>Over Budget: {{status.over_budget}}</div>
+        </div>
+        <br>
+    {% endfor %}
+{% endblock %}
+
+{% block report_footer %}
+
+{% endblock %}
