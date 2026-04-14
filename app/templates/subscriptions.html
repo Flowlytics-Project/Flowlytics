@@ -81,47 +81,36 @@
 
 {% block details_content %}
     {% if selected_subscription is not none %}
-        <div>Name: {{selected_subscription.name}}</div>
-        <div>
-            {% if selected_subscription.active == true %}
-                Status: Active
-            {% else %}
-                Status: Inactive
-            {% endif %}
+        <div class="details-card">
+
+            <div class="details-title">
+                {{selected_subscription.name}}
+            </div>
+
+            <div>
+                <strong>Status:</strong>
+                {% if selected_subscription.active %}
+                    <span class="status-active">Active</span>
+                {% else %}
+                    <span class="status-inactive">Inactive</span>
+                {% endif %}
+            </div>
+
+            <div><strong>Amount:</strong> ${{selected_subscription.amount}}</div>
+
+            <div><strong>Billing Cycle:</strong> {{selected_subscription.billing_cycle.value}}</div>
+
+            <div><strong>Next Due:</strong> {{selected_subscription.next_due}}</div>
+
         </div>
-        <div>Amount: ${{selected_subscription.amount}}</div>
-        <div>Billing Cycle: {{selected_subscription.billing_cycle.value}}</div>
-        <div>Next Due: {{selected_subscription.next_due}}</div>
     {% else %}
-        <div>No subscription selected.</div>
+        <div class="no-selection">No subscription selected.</div>
     {% endif %}
 {% endblock %}
 
 {% block details_footer %}
-  {% if selected_subscription is not none %}
-    <div class="details-card">
-
-        <div class="details-title">
-            {{selected_subscription.name}}
-        </div>
-
-        <div>
-            <strong>Status:</strong>
-            {% if selected_subscription.active %}
-                <span class="status-active">Active</span>
-            {% else %}
-                <span class="status-inactive">Inactive</span>
-            {% endif %}
-        </div>
-
-        <div><strong>Amount:</strong> ${{selected_subscription.amount}}</div>
-
-        <div><strong>Billing Cycle:</strong> {{selected_subscription.billing_cycle.value}}</div>
-
-        <div><strong>Next Due:</strong> {{selected_subscription.next_due}}</div>
-
-    </div>
-{% else %}
-    <div class="no-selection">No subscription selected.</div>
-{% endif %}
+    {% if selected_transaction is not none %}
+        <a class="button" href="/api/subscriptions/update/{{selected_subscription.id}}">Update Subscription</a>
+        <a class="button" href="/api/subscriptions/delete/{{selected_subscription.id}}">Delete Subscription</a>
+    {% endif %}
 {% endblock %}
