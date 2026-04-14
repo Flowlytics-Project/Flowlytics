@@ -2,20 +2,80 @@
 
 {% block title %}Budget Status{% endblock %}
 
+
+{% block subpage_scripts %}
+<style>
+    .budget-container
+    {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .budget-card
+    {
+        background-color: var(--primary);
+        color: var(--black);
+        padding: 15px;
+        border-radius: 12px;
+        font-family: var(--minor-font);
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        transition: transform 0.2s;
+    }
+
+    .budget-card:hover
+    {
+        transform: scale(1.02);
+    }
+
+    .over-budget
+    {
+        background-color: red;
+        color: white;
+    }
+
+    .budget-title
+    {
+        font-family: var(--major-font);
+        font-weight: bold;
+        font-size: 120%;
+    }
+</style>
+{% endblock %}
+
 {% block report_header %}Budget Status Report{% endblock %}
 
 {% block report_content %}
-    {% for status in report %}
-        <div>
-            <div>Category: {{status.category.value}}</div>
-            <div>Limit: ${{status.limit_amount}}</div>
-            <div>Spent: ${{status.spent}}</div>
-            <div>Remaining: ${{status.remaining}}</div>
-            <div>Over Budget: {{status.over_budget}}</div>
-        </div>
-        <br>
-    {% endfor %}
+      <div class="budget-container">
+        {% for status in report %}
+            <div class="budget-card {% if status.over_budget %}over-budget{% endif %}">
+                
+                <div class="budget-title">
+                    {{status.category.value}}
+                </div>
+
+                <div>Limit: ${{status.limit_amount}}</div>
+                <div>Spent: ${{status.spent}}</div>
+                <div>Remaining: ${{status.remaining}}</div>
+
+                <div>
+                    Over Budget: 
+                    {% if status.over_budget %}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
+
+     
 
 {% block report_footer %}
 

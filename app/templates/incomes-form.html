@@ -2,7 +2,64 @@
 
 {% block title %}Incomes{% endblock %}
 
+{% block subpage_scripts %}
+<style>
+    /* Form layout */
+    .form
+    {
+        width: 60%;
+        gap: 10px;
+        align-self: center;
+    }
+
+    /* Labels */
+    .form label
+    {
+        font-family: var(--major-font);
+        color: var(--white);
+        margin-top: 10px;
+    }
+
+    /* Inputs + selects */
+    .form input,
+    .form select
+    {
+        height: 45px;
+        border-radius: 8px;
+        border: none;
+        padding: 10px;
+        font-family: var(--minor-font);
+        background-color: var(--white);
+        color: var(--black);
+        outline: none;
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    /* Focus effect */
+    .form input:focus,
+    .form select:focus
+    {
+        transform: scale(1.02);
+        box-shadow: 0 0 5px var(--primary);
+    }
+
+    /* Header styling */
+    .pane-header strong
+    {
+        font-size: 120%;
+    }
+
+    /* Footer spacing */
+    .pane-footer
+    {
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
 {% block list_header %}Incomes{% endblock %}
+
+
 
 {% block list_content %}
     {% for income in incomes %}

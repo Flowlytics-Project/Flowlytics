@@ -7,62 +7,104 @@
 
 {% block internal_css %}
 <style>
-    body {
-        font-family: 'Montserrat', sans-serif;
-        background: url("https://plus.unsplash.com/premium_photo-1723672886374-96ccede8bb19?q=80&w=1170&auto=format&fit=crop") no-repeat center center fixed;
-        background-size: cover;
+  
+    body
+    {
+        background-color: var(--white);
+        font-family: var(--minor-font);
     }
 
-    .login-container {
+    .login-container
+    {
         min-height: 100vh;
     }
 
-    .login-card {
+    .login-card
+    {
         border: none;
-        border-radius: 1rem;
+        border-radius: 12px;
         overflow: hidden;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(8px);
+        width: 80%;
+        display: flex;
     }
 
-    .login-image {
-        background: linear-gradient(135deg, #34eb8f, #2fd47e);
+    .login-image
+    {
+        background-color: var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--black);
         padding: 3rem;
+        font-family: var(--major-font);
     }
 
-    .form-section {
+    .form-section
+    {
         padding: 3rem;
+        background-color: var(--black);
+        color: var(--white);
+        width: 100%;
     }
 
-    .btn-primary {
-        background-color: #34eb8f;
-        border-radius: 0.5rem;
-        font-family: 'Comfortaa', cursive;
-        font-weight: 600;
-    }
-    .btn-primary:hover {
-        background-color: #2fd47e;
-    }
-    .btn-secondary {
-        border-radius: 0.5rem;
-        font-family: 'Comfortaa', cursive;
-        color: #34eb8f;
-        background-color: transparent;
-    }
-    .btn-secondary:hover {
-        background-color: #34eb8f;
-        color: white;
+    .form-section h3,
+    .login-image h2
+    {
+        font-family: var(--major-font);
     }
 
-    .form-control {
-        border-radius: 0.5rem;
+    /* Inputs */
+    .form-control
+    {
+        border-radius: 8px;
+        border: none;
+        padding: 10px;
+        font-family: var(--minor-font);
+        background-color: var(--white);
+        color: var(--black);
     }
-    h2, h3 {
-        font-family: 'Comfortaa', cursive;
+
+    .form-control:focus
+    {
+        outline: none;
+        box-shadow: 0 0 5px var(--primary);
+    }
+
+    /* Buttons (match your app) */
+    .btn-primary,
+    .btn-secondary
+    {
+        border-radius: 10px;
+        padding: 12px;
+        font-family: var(--major-font);
+        font-weight: bold;
+        border: none;
+        transition: opacity 0.2s;
+    }
+
+    .btn-primary
+    {
+        background-color: var(--primary);
+        color: var(--black);
+    }
+
+    .btn-secondary
+    {
+        background-color: var(--white);
+        color: var(--black);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover
+    {
+        opacity: 0.7;
+    }
+
+    /* Alerts */
+    .alert
+    {
+        border-radius: 8px;
+        font-family: var(--minor-font);
     }
 </style>
 {% endblock %}

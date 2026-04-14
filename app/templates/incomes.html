@@ -2,6 +2,47 @@
 
 {% block title %}Incomes{% endblock %}
 
+{% block subpage_scripts %}
+<style>
+    /* Details card (same as budgets) */
+    .details-card
+    {
+        background-color: var(--primary);
+        color: var(--black);
+        padding: 20px;
+        border-radius: 12px;
+        font-family: var(--minor-font);
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Title */
+    .details-title
+    {
+        font-family: var(--major-font);
+        font-weight: bold;
+        font-size: 130%;
+        margin-bottom: 10px;
+    }
+
+    /* Empty state */
+    .no-selection
+    {
+        color: var(--white);
+        font-family: var(--minor-font);
+        opacity: 0.7;
+    }
+
+    /* Footer spacing */
+    .pane-footer
+    {
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
 {% block list_header %}Incomes{% endblock %}
 
 {% block list_content %}
@@ -20,23 +61,36 @@
 
 {% block details_content %}
     {% if selected_income is not none %}
-        <div>Source: {{selected_income.source}}</div>
-        <div>Amount: ${{selected_income.amount}}</div>
+    <div class="details-card">
+
+        <div class="details-title">
+            {{selected_income.source}}
+        </div>
+
+        <div><strong>Amount:</strong> ${{selected_income.amount}}</div>
+
         <div>
-            {% if selected_income.is_recurring == true %}
-                Recurring: Yes
+            <strong>Recurring:</strong>
+            {% if selected_income.is_recurring %}
+                Yes
             {% else %}
-                Recurring: No
+                No
             {% endif %}
         </div>
-        {% if selected_income.recurrence_period %}
-            <div>Recurrence Period: {{selected_income.recurrence_period.value}}</div>
-        {% else %}
-            <div>Recurrence Period: none</div>
-        {% endif %}
-    {% else %}
-        <div>No income selected.</div>
-    {% endif %}
+
+        <div>
+            <strong>Recurrence Period:</strong>
+            {% if selected_income.recurrence_period %}
+                {{selected_income.recurrence_period.value}}
+            {% else %}
+                None
+            {% endif %}
+        </div>
+
+    </div>
+{% else %}
+    <div class="no-selection">No income selected.</div>
+{% endif %}
 {% endblock %}
 
 {% block details_footer %}

@@ -1,6 +1,64 @@
 {% extends "view-page.html" %}
+{% extends "view-page.html" %}
 
 {% block title %}Transactions{% endblock %}
+
+{% block subpage_scripts %}
+<style>
+    /* Form */
+    .form
+    {
+        width: 60%;
+        gap: 10px;
+        align-self: center;
+    }
+
+    .form label
+    {
+        font-family: var(--major-font);
+        color: var(--white);
+        margin-top: 10px;
+    }
+
+    .form input,
+    .form select
+    {
+        height: 45px;
+        border-radius: 8px;
+        border: none;
+        padding: 10px;
+        font-family: var(--minor-font);
+        background-color: var(--white);
+        color: var(--black);
+        outline: none;
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .form input:focus,
+    .form select:focus
+    {
+        transform: scale(1.02);
+        box-shadow: 0 0 5px var(--primary);
+    }
+
+    /* Header consistency */
+    .pane-header strong
+    {
+        font-size: 120%;
+    }
+
+    /* Footer spacing */
+    .pane-footer
+    {
+        gap: 10px;
+    }
+
+    .list-card strong
+    {
+        margin-left: auto;
+    }
+</style>
+{% endblock %}
 
 {% block list_header %}Transactions{% endblock %}
 

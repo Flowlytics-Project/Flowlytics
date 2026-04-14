@@ -2,6 +2,66 @@
 
 {% block title %}Budgets{% endblock %}
 
+{% block subpage_scripts %}
+<style>
+    /* Form  */
+    .form
+    {
+        width: 60%;
+        gap: 10px;
+    }
+
+    /* Labels */
+    .form label
+    {
+        font-family: var(--major-font);
+        color: var(--white);
+        margin-top: 10px;
+    }
+
+    /* Inputs  */
+    .form input,
+    .form select
+    {
+        height: 45px;
+        border-radius: 8px;
+        border: none;
+        padding: 10px;
+        font-family: var(--minor-font);
+        background-color: var(--white);
+        color: var(--black);
+        outline: none;
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    /* Focus effect */
+    .form input:focus,
+    .form select:focus
+    {
+        transform: scale(1.02);
+        box-shadow: 0 0 5px var(--primary);
+    }
+
+    /* Dropdown options */
+    .form select option
+    {
+        font-family: var(--minor-font);
+    }
+
+    /* Header styling consistency */
+    .pane-header strong
+    {
+        font-size: 120%;
+    }
+
+    /* Button alignment tweak */
+    .pane-footer .button
+    {
+        min-width: 120px;
+    }
+</style>
+{% endblock %}
+
 {% block list_header %}Budgets{% endblock %}
 
 {% block list_content %}

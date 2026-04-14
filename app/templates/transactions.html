@@ -2,6 +2,47 @@
 
 {% block title %}Transactions{% endblock %}
 
+{% block subpage_scripts %}
+<style>
+    /* Transaction */
+    .details-card
+    {
+        background-color: var(--primary);
+        color: var(--black);
+        padding: 20px;
+        border-radius: 12px;
+        font-family: var(--minor-font);
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Title */
+    .details-title
+    {
+        font-family: var(--major-font);
+        font-weight: bold;
+        font-size: 130%;
+        margin-bottom: 10px;
+    }
+
+    /* Empty state */
+    .no-selection
+    {
+        color: var(--white);
+        opacity: 0.7;
+        font-family: var(--minor-font);
+    }
+
+    /* Footer spacing */
+    .pane-footer
+    {
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
 {% block list_header %}Transactions{% endblock %}
 
 {% block list_content %}
@@ -20,13 +61,24 @@
 
 {% block details_content %}
     {% if selected_transaction is not none %}
-        <div>Amount: ${{selected_transaction.amount}}</div>
-        <div>Date: {{selected_transaction.transaction_date}}</div>
-        <div>Category: {{selected_transaction.category.value}}</div>
-        <div>Description: {{selected_transaction.description}}</div>
-    {% else %}
-        <div>No transaction selected.</div>
-    {% endif %}
+    <div class="details-card">
+
+        <div class="details-title">
+            Transaction
+        </div>
+
+        <div><strong>Amount:</strong> ${{selected_transaction.amount}}</div>
+
+        <div><strong>Date:</strong> {{selected_transaction.transaction_date}}</div>
+
+        <div><strong>Category:</strong> {{selected_transaction.category.value}}</div>
+
+        <div><strong>Description:</strong> {{selected_transaction.description}}</div>
+
+    </div>
+{% else %}
+    <div class="no-selection">No transaction selected.</div>
+{% endif %}
 {% endblock %}
 
 {% block details_footer %}

@@ -2,25 +2,85 @@
 
 {% block title %}Burn Rate Report{% endblock %}
 
+{% block subpage_scripts %}
+<style>
+    /* Main container */
+    .report-container
+    {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* Summary card (top section) */
+    .summary-card
+    {
+        background-color: var(--primary);
+        color: var(--black);
+        padding: 20px;
+        border-radius: 12px;
+        font-family: var(--minor-font);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Section title */
+    .section-title
+    {
+        font-family: var(--major-font);
+        font-size: 130%;
+        font-weight: bold;
+        color: var(--white);
+    }
+
+    /* Breakdown cards */
+    .breakdown-card
+    {
+        background-color: var(--primary);
+        color: var(--black);
+        padding: 12px;
+        border-radius: 10px;
+        font-family: var(--minor-font);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .breakdown-card:hover
+    {
+        transform: scale(1.02);
+    }
+</style>
+{% endblock %}
+
 {% block report_header %}Burn Rate Report{% endblock %}
 
 {% block report_content %}
-    <div>Total Income: ${{report.total_income}}</div>
-    <div>Total Expenses: ${{report.total_expenses}}</div>
-    <div>Total Subscriptions: ${{report.total_subscriptions}}</div>
-    <div>Net: ${{report.net}}</div>
-    <div>Burn Rate Percentage: {{report.burn_rate_percentage}}%</div>
-    <br>
-    <div>Category Breakdown:</div>
-    <br>
-    <div>
+ <div class="report-container">
+
+        <!-- Summary -->
+        <div class="summary-card">
+            <div><strong>Total Income:</strong> ${{report.total_income}}</div>
+            <div><strong>Total Expenses:</strong> ${{report.total_expenses}}</div>
+            <div><strong>Total Subscriptions:</strong> {{report.total_subscriptions}}</div>
+            <div><strong>Net:</strong> ${{report.net}}</div>
+            <div><strong>Burn Rate:</strong> {{report.burn_rate_percentage}}%</div>
+        </div>
+
+        <!-- Breakdown Title -->
+        <div class="section-title">Category Breakdown</div>
+
+        <!-- Breakdown List -->
         {% for category in report.category_breakdown %}
-            <div>
-                Category: {{category.category.value}} |
-                Total: ${{category.total}} |
-                Percentage: {{category.percentage}}%
+            <div class="breakdown-card">
+                <div><strong>{{category.category.value}}</strong></div>
+                <div>${{category.total}}</div>
+                <div>{{category.percentage}}%</div>
             </div>
         {% endfor %}
+
     </div>
 {% endblock %}
 
