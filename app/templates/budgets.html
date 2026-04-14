@@ -63,9 +63,12 @@
 
 {% block details_content %}
     {% if selected_budget is not none %}
+    <div class="details-card">
+        <div class="details-title">Budget</div>
         <div>Category: {{selected_budget.category.value}}</div>
         <div>Limit: ${{selected_budget.limit_amount}}</div>
         <div>Period: {{selected_budget.period.value}}</div>
+    </div>
     {% else %}
         <div>No budget selected.</div>
     {% endif %}
