@@ -8,7 +8,9 @@
 {% block internal_css %}
 <style>
     body {
-        background-color: #f8f9fa;
+        font-family: 'Montserrat', sans-serif;
+        background: url("https://plus.unsplash.com/premium_photo-1723672886374-96ccede8bb19?q=80&w=1170&auto=format&fit=crop") no-repeat center center fixed;
+        background-size: cover;
     }
 
     .login-container {
@@ -19,10 +21,12 @@
         border: none;
         border-radius: 1rem;
         overflow: hidden;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(8px);
     }
 
     .login-image {
-        background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+        background: linear-gradient(135deg, #34eb8f, #2fd47e);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -35,11 +39,30 @@
     }
 
     .btn-primary {
+        background-color: #34eb8f;
         border-radius: 0.5rem;
+        font-family: 'Comfortaa', cursive;
+        font-weight: 600;
+    }
+    .btn-primary:hover {
+        background-color: #2fd47e;
+    }
+    .btn-secondary {
+        border-radius: 0.5rem;
+        font-family: 'Comfortaa', cursive;
+        color: #34eb8f;
+        background-color: transparent;
+    }
+    .btn-secondary:hover {
+        background-color: #34eb8f;
+        color: white;
     }
 
     .form-control {
         border-radius: 0.5rem;
+    }
+    h2, h3 {
+        font-family: 'Comfortaa', cursive;
     }
 </style>
 {% endblock %}
