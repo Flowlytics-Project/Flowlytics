@@ -466,6 +466,11 @@
    MAIN CONTENT
 ========================= */ 
 
+{% block content %}
+{% endblock %} 
+
+{% block footer %} 
+
 <footer class="app-footer">
     <span class="brand">Flowlytics</span>
     <nav>
@@ -474,9 +479,7 @@
         <a href="/logout">Log Out</a>
     </nav>
     <span class="copy">&copy; 2026 Flowlytics. All rights reserved.</span>
-</footer>
+</footer> 
 
-{% block content %}
-{% endblock %} 
-
+{% endblock %}
  
