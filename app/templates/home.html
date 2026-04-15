@@ -4,35 +4,32 @@
 
 {% block subpage_scripts %}
 <style>
-    /* Welcome card */
-    .welcome-card
-    {
+    .welcome-card {
         background-color: var(--primary);
         color: var(--black);
         padding: 25px;
         border-radius: 12px;
         font-family: var(--major-font);
         font-size: 130%;
-        width: 70%;
+        width: 100%; /* FIX: was 70% causing awkward alignment */
         text-align: center;
+        margin-bottom: 20px;
     }
 
-    /* Optional subtext */
-    .welcome-subtext
-    {
+    .welcome-subtext {
         font-family: var(--minor-font);
         font-size: 80%;
         margin-top: 5px;
     }
 
-    /* Empty state for transactions */
-    .empty-state
-    {
+    .empty-state {
         color: var(--white);
         font-family: var(--minor-font);
         opacity: 0.7;
         text-align: center;
     }
+</style>
+{% endblock %}
 </style>
 {% endblock %}
 
