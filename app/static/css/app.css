@@ -28,15 +28,12 @@
   border-radius: 5px;
 }
 
-body
-{
-    background-color: var(--white);
-} 
 
 body {
+  background-color: var(--black);
   display: flex; 
   flex-direction: column;
   height: 100vh; 
   margin: 0; 
   overflow: hidden;
-} 
+}  
