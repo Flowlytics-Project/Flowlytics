@@ -2,116 +2,33 @@
 {% block title %}Register{% endblock %}
 
 {% block external_js %}
-
 {% endblock %}
 
 {% block internal_css %}
 <style>
-  
-    body
-    {
-        background-color: var(--white);
-        font-family: var(--minor-font);
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Montserrat:wght@400;500;600&display=swap');
+
+    :root {
+        --primary: #34eb8f;
+        --primary-dark: #1fc972;
+        --black: #262626;
+        --dark: #111111;
+        --white: #f5f7f6;
+        --major-font: 'Comfortaa', cursive;
+        --minor-font: 'Montserrat', sans-serif;
     }
 
-    .login-container
-    {
+    body {
+        font-family: var(--minor-font);
+        background-color: var(--dark);
+        background-image: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(52, 235, 143, 0.06) 0%, transparent 70%);
         min-height: 100vh;
-    }
-
-    .login-card
-    {
-        border: none;
-        border-radius: 12px;
-        overflow: hidden;
-        width: 80%;
         display: flex;
-    }
-
-    .login-image
-    {
-        background-color: var(--primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--black);
-        padding: 3rem;
-        font-family: var(--major-font);
-    }
-
-    .form-section
-    {
-        padding: 3rem;
-        background-color: var(--black);
+        flex-direction: column;
         color: var(--white);
-        width: 100%;
     }
 
-    .form-section h3,
-    .login-image h2
-    {
-        font-family: var(--major-font);
-    }
-
-    /* Inputs */
-    .form-control
-    {
-        border-radius: 8px;
-        border: none;
-        padding: 10px;
-        font-family: var(--minor-font);
-        background-color: var(--white);
-        color: var(--black);
-    }
-
-    .form-control:focus
-    {
-        outline: none;
-        box-shadow: 0 0 5px var(--primary);
-    }
-
-    /* Buttons (match your app) */
-    .btn-primary,
-    .btn-secondary
-    {
-        border-radius: 10px;
-        padding: 12px;
-        font-family: var(--major-font);
-        font-weight: bold;
-        border: none;
-        transition: opacity 0.2s;
-    }
-
-    .btn-primary
-    {
-        background-color: var(--primary);
-        color: var(--black);
-    }
-
-    .btn-secondary
-    {
-        background-color: var(--white);
-        color: var(--black);
-    }
-
-    .btn-primary:hover,
-    .btn-secondary:hover
-    {
-        opacity: 0.7;
-    }
-
-    /* Alerts */
-    .alert
-    {
-        border-radius: 8px;
-        font-family: var(--minor-font);
-    }
-</style>
-{% endblock %}
-
-{% block navbar %}
-
-<style>
+    /* ── Navbar ── */
     .lp-nav-login {
         position: fixed;
         top: 0; left: 0; right: 0;
@@ -128,10 +45,10 @@
     }
 
     .lp-nav-login-brand {
-        font-family: 'Comfortaa', cursive;
+        font-family: var(--major-font);
         font-size: 1.45rem;
         font-weight: 700;
-        color: #34eb8f;
+        color: var(--primary);
         text-decoration: none;
         letter-spacing: 0.5px;
     }
@@ -143,10 +60,10 @@
     }
 
     .lp-nav-login-links a {
-        font-family: 'Comfortaa', cursive;
+        font-family: var(--major-font);
         font-size: 0.88rem;
         font-weight: 600;
-        color: #f5f7f6;
+        color: var(--white);
         text-decoration: none;
         padding: 0.5rem 1.1rem;
         border-radius: 8px;
@@ -155,86 +72,319 @@
 
     .lp-nav-login-links a:hover {
         background: rgba(52, 235, 143, 0.12);
-        color: #34eb8f;
+        color: var(--primary);
     }
 
     .lp-nav-login-links .nav-signup {
-        background: #34eb8f;
-        color: #262626;
+        background: var(--primary);
+        color: var(--black);
     }
 
     .lp-nav-login-links .nav-signup:hover {
-        background: #1fc972;
-        color: #262626;
+        background: var(--primary-dark);
+        color: var(--black);
     }
 
+    /* ── Hamburger ── */
+    .lp-hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 6px;
+        background: none;
+        border: none;
+    }
+
+    .lp-hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--white);
+        border-radius: 2px;
+        transition: all 0.3s;
+    }
+
+    .lp-hamburger.open span:nth-child(1) { transform: rotate(45deg) translateY(7px); }
+    .lp-hamburger.open span:nth-child(2) { opacity: 0; }
+    .lp-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translateY(-7px); }
+
+    /* ── Mobile Menu ── */
+    .lp-mobile-menu {
+        display: none;
+        position: fixed;
+        top: 68px;
+        left: 0; right: 0;
+        background: rgba(17, 17, 17, 0.97);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        z-index: 99;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid rgba(52, 235, 143, 0.15);
+    }
+
+    .lp-mobile-menu.open { display: flex; }
+
+    .lp-mobile-menu a {
+        font-family: var(--major-font);
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--white);
+        text-decoration: none;
+        padding: 0.85rem 1rem;
+        border-radius: 8px;
+        transition: background 0.2s, color 0.2s;
+        text-align: center;
+    }
+
+    .lp-mobile-menu a:hover {
+        background: rgba(52, 235, 143, 0.12);
+        color: var(--primary);
+    }
+
+    .lp-mobile-menu .btn-login-mob {
+        border: 1.5px solid var(--primary);
+        color: var(--primary);
+    }
+
+    .lp-mobile-menu .btn-signup-mob {
+        background: var(--primary);
+        color: var(--black);
+        margin-top: 0.25rem;
+    }
+
+    /* ── Page Body ── */
     body { padding-top: 68px; }
 
-</style>
+    .register-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
 
+    /* ── Card ── */
+    .login-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+    }
+
+    .login-image {
+        background-color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--black);
+        padding: 3rem;
+        font-family: var(--major-font);
+        min-height: 300px;
+        min-width: 260px;
+    }
+
+    .form-section {
+        padding: 2.5rem;
+        background-color: var(--black);
+        color: var(--white);
+        width: 100%;
+    }
+
+    .form-section h3,
+    .login-image h2 {
+        font-family: var(--major-font);
+    }
+
+    /* ── Inputs ── */
+    .form-control {
+        border-radius: 8px;
+        border: none;
+        padding: 10px;
+        font-family: var(--minor-font);
+        background-color: var(--white);
+        color: var(--black);
+    }
+
+    .form-control:focus {
+        outline: none;
+        box-shadow: 0 0 5px var(--primary);
+    }
+
+    .form-label {
+        font-family: var(--major-font);
+        color: var(--white);
+    }
+
+    /* ── Buttons ── */
+    .btn-primary,
+    .btn-secondary {
+        border-radius: 10px;
+        padding: 12px;
+        font-family: var(--major-font);
+        font-weight: bold;
+        border: none;
+        transition: opacity 0.2s;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        color: var(--black);
+    }
+
+    .btn-secondary {
+        background-color: rgba(255,255,255,0.1);
+        color: var(--white);
+        border: 1.5px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover { opacity: 0.75; }
+
+    /* ── Alerts ── */
+    .alert {
+        border-radius: 8px;
+        font-family: var(--minor-font);
+    }
+
+    /* ── Footer ── */
+    footer {
+        padding: 1.75rem 2.5rem;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background: var(--dark);
+    }
+
+    footer .brand {
+        font-family: var(--major-font);
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    footer .copy {
+        font-size: 0.82rem;
+        color: rgba(245,247,246,0.35);
+    }
+
+    footer nav a {
+        font-size: 0.82rem;
+        color: rgba(245,247,246,0.4);
+        text-decoration: none;
+        margin-left: 1.25rem;
+        transition: color 0.2s;
+    }
+
+    footer nav a:hover { color: var(--primary); }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+        .lp-nav-login-links { display: none; }
+        .lp-hamburger { display: flex; }
+        .lp-nav-login { padding: 0 1.25rem; }
+        .register-wrapper { padding: 1.5rem 1rem; align-items: flex-start; }
+        .login-card { flex-direction: column; }
+        .login-image { min-width: unset; padding: 2rem 1.5rem; }
+        .form-section { padding: 1.75rem 1.5rem; }
+        footer { flex-direction: column; align-items: flex-start; }
+        footer nav { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        footer nav a { margin-left: 0; }
+    }
+</style>
+{% endblock %}
+
+{% block navbar %}
 <nav class="lp-nav-login">
     <a class="lp-nav-login-brand" href="{{ url_for('landing_view') }}">Flowlytics</a>
     <div class="lp-nav-login-links">
         <a href="{{ url_for('login_view') }}">Login</a>
         <a href="{{ url_for('register_view') }}" class="nav-signup">Get Started</a>
     </div>
+    <button class="lp-hamburger" id="hamburgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
 </nav>
 
+<div class="lp-mobile-menu" id="mobileMenu">
+    <a href="{{ url_for('login_view') }}" class="btn-login-mob">Login</a>
+    <a href="{{ url_for('register_view') }}" class="btn-signup-mob">Get Started</a>
+</div>
 {% endblock %}
 
 {% block content %}
-
-<div class="container login-container d-flex align-items-center justify-content-center">
-    <div class="card shadow-lg login-card col-lg-10">
-        <div class="row g-0">
+<div class="register-wrapper">
+    <div class="card shadow-lg login-card">
+        <div class="row g-0 w-100">
             <div class="col-lg-6 d-none d-lg-flex login-image">
                 <div class="text-center">
                     <h2 class="mt-4 fw-bold">Registration</h2>
                     <p class="lead">Create an account for the app</p>
                 </div>
             </div>
-            <div class="col-lg-6 bg-white">
+            <div class="col-12 col-lg-6">
                 <div class="form-section">
                     <h3 class="fw-bold mb-4">Register</h3>
 
                     <form id="signUpForm" method="POST">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control form-control-md" id="username" name="username"
-                                required="required">
+                            <input type="text" class="form-control form-control-md" id="username" name="username" required>
                         </div>
                         <div class="mb-3">
-                            <label for="username" class="form-label">Email</label>
-                            <input type="email" class="form-control form-control-md" id="email" name="email"
-                                required="required">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control form-control-md" id="email" name="email" required>
                         </div>
-
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control form-control-md" id="password" name="password"
-                                required>
+                            <input type="password" class="form-control form-control-md" id="password" name="password" required>
                         </div>
-
                         <div class="d-grid mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                Register
-                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
                         </div>
-
                         <div class="d-grid mb-3">
-                            <a class="btn btn-secondary btn-lg" href="{{url_for('login_view')}}" role="button">
-                                Back to Login
-                            </a>
+                            <a class="btn btn-secondary btn-lg" href="{{ url_for('login_view') }}" role="button">Back to Login</a>
                         </div>
                         {% for message in get_flashed_messages(request) %}
                         <div class="alert alert-{{ message.type }}" role="alert">{{ message.message }}</div>
                         {% endfor %}
                     </form>
-
                 </div>
             </div>
-
         </div>
     </div>
 </div>
+
+<footer>
+    <span class="brand">Flowlytics</span>
+    <nav>
+        <a href="{{ url_for('login_view') }}">Login</a>
+        <a href="{{ url_for('register_view') }}">Register</a>
+    </nav>
+    <span class="copy">© 2026 Flowlytics. All rights reserved.</span>
+</footer>
+
+<script>
+    const btn = document.getElementById('hamburgerBtn');
+    const menu = document.getElementById('mobileMenu');
+
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('open');
+        menu.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+            btn.classList.remove('open');
+            menu.classList.remove('open');
+        }
+    });
+</script>
 {% endblock %}
