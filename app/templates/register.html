@@ -109,6 +109,78 @@
 </style>
 {% endblock %}
 
+{% block navbar %}
+
+<style>
+    .lp-nav-login {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2.5rem;
+        height: 68px;
+        background: rgba(17, 17, 17, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(52, 235, 143, 0.12);
+    }
+
+    .lp-nav-login-brand {
+        font-family: 'Comfortaa', cursive;
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #34eb8f;
+        text-decoration: none;
+        letter-spacing: 0.5px;
+    }
+
+    .lp-nav-login-links {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .lp-nav-login-links a {
+        font-family: 'Comfortaa', cursive;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #f5f7f6;
+        text-decoration: none;
+        padding: 0.5rem 1.1rem;
+        border-radius: 8px;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .lp-nav-login-links a:hover {
+        background: rgba(52, 235, 143, 0.12);
+        color: #34eb8f;
+    }
+
+    .lp-nav-login-links .nav-signup {
+        background: #34eb8f;
+        color: #262626;
+    }
+
+    .lp-nav-login-links .nav-signup:hover {
+        background: #1fc972;
+        color: #262626;
+    }
+
+    body { padding-top: 68px; }
+
+</style>
+
+<nav class="lp-nav-login">
+    <a class="lp-nav-login-brand" href="{{ url_for('landing_view') }}">Flowlytics</a>
+    <div class="lp-nav-login-links">
+        <a href="{{ url_for('login_view') }}">Login</a>
+        <a href="{{ url_for('register_view') }}" class="nav-signup">Get Started</a>
+    </div>
+</nav>
+
+{% endblock %}
 
 {% block content %}
 
