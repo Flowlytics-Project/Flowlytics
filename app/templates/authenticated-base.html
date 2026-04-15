@@ -181,6 +181,44 @@
 }
 
 /* =========================
+   DETAILS
+========================= */
+
+/* Transaction */
+    .details-card
+    {
+        background-color: var(--black);
+        color: var(--primary);
+        padding: 20px;
+        border-style: solid;
+        border-width: 2px;
+        border-color: var(--primary);
+        border-radius: 12px;
+        font-family: var(--minor-font);
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Title */
+    .details-title
+    {
+        font-family: var(--major-font);
+        font-weight: bold;
+        font-size: 130%;
+        margin-bottom: 10px;
+    }
+
+    /* Empty state */
+    .no-selection
+    {
+        color: var(--white);
+        opacity: 0.7;
+        font-family: var(--minor-font);
+    }
+
+/* =========================
    FORM SYSTEM
 ========================= */
 
@@ -258,11 +296,106 @@
 
 .report-pane
 {
-    width: 70%;
-    max-width: 900px;
+    width: 100%;
     background-color: var(--black);
-    border-radius: 12px;
     overflow: hidden;
+}
+
+/* Main container */
+.report-container
+{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Summary card (top section) */
+.summary-card
+{
+    background-color: var(--black);
+    color: var(--primary);
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--primary);
+    padding: 20px;
+    border-radius: 12px;
+    font-family: var(--minor-font);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Section title */
+.section-title
+{
+    font-family: var(--major-font);
+    font-size: 130%;
+    font-weight: bold;
+    color: var(--white);
+}
+
+/* Breakdown cards */
+.breakdown-card
+{
+    background-color: var(--black);
+    color: var(--primary);
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--primary);
+    padding: 12px;
+    border-radius: 10px;
+    font-family: var(--minor-font);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+/* .breakdown-card:hover //These items are not clickable, thus should not change while hovering.
+{
+    transform: scale(1.02);
+} */
+
+.budget-container
+{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.budget-card
+{
+    background-color: var(--black);
+    color: var(--primary);
+    padding: 15px;
+    border-style: solid;
+    border-color: var(--primary);
+    border-width: 2px;
+    border-radius: 12px;
+    font-family: var(--minor-font);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: transform 0.2s;
+}
+
+/* .budget-card:hover //These items are not clickable, thus should not change while hovering.
+{
+    transform: scale(1.02);
+} */
+
+.over-budget
+{
+    background-color: red;
+    color: white;
+}
+
+.budget-title
+{
+    font-family: var(--major-font);
+    font-weight: bold;
+    font-size: 120%;
 }
 
 </style>

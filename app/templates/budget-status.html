@@ -4,46 +4,7 @@
 
 
 {% block subpage_scripts %}
-<style>
-    .budget-container
-    {
-        width: 80%;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
 
-    .budget-card
-    {
-        background-color: var(--primary);
-        color: var(--black);
-        padding: 15px;
-        border-radius: 12px;
-        font-family: var(--minor-font);
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        transition: transform 0.2s;
-    }
-
-    .budget-card:hover
-    {
-        transform: scale(1.02);
-    }
-
-    .over-budget
-    {
-        background-color: red;
-        color: white;
-    }
-
-    .budget-title
-    {
-        font-family: var(--major-font);
-        font-weight: bold;
-        font-size: 120%;
-    }
-</style>
 {% endblock %}
 
 {% block report_header %}Budget Status Report{% endblock %}
